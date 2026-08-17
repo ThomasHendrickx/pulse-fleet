@@ -48,3 +48,22 @@ PostgREST no longer exists as an attack surface and the anon key grants
 only the public Auth endpoints. No interim hand-applied RLS: enablement
 ships in an M1-P2 migration per the charter backstop clause, keeping the
 repo the owner of schema state.
+
+## Deploy-verify debugging record, M1-P1 continued (2026-08-17 late)
+
+Root-cause chain so far: (1) DATABASE_URL initially pointed at the direct
+db.<ref>.supabase.co host, which has no IPv4 A record and is unreachable
+from Vercel by construction. (2) While fixing it, the owner's env edit
+dropped NEXT_PUBLIC_SUPABASE_URL (confirmed by the owner's Vercel log
+paste), which broke subsequent deploy behavior and masked the fix. (3)
+With vars restored and pooler URL in place, P1001 persists with ZERO
+connection arrivals in Supabase's own pooler logs across every probe.
+Open hypotheses: Supabase network restrictions dropping at the edge, or
+a still-wrong host value. Micro rounds landed: diagnostics logging (PR3),
+prisma generate in build (PR4), db health probe (PR6), build-safe env
+validation (PR7). Round 4 (env host disclosure on the public endpoint)
+was security-flagged and abandoned in favor of a boolean-only triage
+probe (round 6, in flight). Process notes: the permission layer treats
+agent self-widening of permissions as a hard boundary regardless of chat
+approval; the Vercel MCP connector is scoped to three pre-pulse projects
+and cannot see pulse (claude.ai-side OAuth scoping).
