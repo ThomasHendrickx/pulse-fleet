@@ -60,6 +60,11 @@ verification-first step.
 2. Two banks means at least two source profiles from the first real
    import, and the card-versus-account settlement pairing appears on both
    sides with linkable references.
-3. If PDF is the real v1 input format, the charter premise "Bank CSV
-   exports in" needs an owner decision before M1-P2 is implemented; the
-   orchestrator has raised it.
+3. RESOLVED by the owner (2026-08-17): both CSV and PDF are available
+   from the same sources; the PDFs were mobile exports, the PC export is
+   CSV. CSV remains the v1 input and the charter premise stands. Two
+   consequences kept: the CSV column layouts still need verification
+   against real PC exports during M1-P2 (the PDFs verify content and
+   keys, not CSV columns), and PDF import is a parked idea only, since
+   the owner's habitual mobile export produces PDFs the v1 importer will
+   not accept.
