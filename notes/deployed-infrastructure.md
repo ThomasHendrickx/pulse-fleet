@@ -40,3 +40,11 @@ three public tables (critical). The app reaches Postgres via Prisma as
 table owner, so enabling RLS without policies does not affect it; the
 charter names RLS as backstop. Proper enablement belongs in an M1-P2
 migration; interim enablement is the owner's call.
+
+RESOLUTION of the RLS advisory (2026-08-17): the owner disabled the
+Supabase Data API entirely, matching the pure server-side architecture
+(zero client components; Supabase reached only from server actions), so
+PostgREST no longer exists as an attack surface and the anon key grants
+only the public Auth endpoints. No interim hand-applied RLS: enablement
+ships in an M1-P2 migration per the charter backstop clause, keeping the
+repo the owner of schema state.
