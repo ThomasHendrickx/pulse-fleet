@@ -67,3 +67,14 @@ probe (round 6, in flight). Process notes: the permission layer treats
 agent self-widening of permissions as a hard boundary regardless of chat
 approval; the Vercel MCP connector is scoped to three pre-pulse projects
 and cannot see pulse (claude.ai-side OAuth scoping).
+
+FINAL TRIAGE VERDICT (2026-08-18, from the deployed function itself):
+all four public pooler endpoints (aws-0/aws-1 eu-central-1, 6543/5432)
+are TCP-reachable from Vercel, so no network restrictions exist; the
+env DATABASE_URL host is a supabase domain with NO IPv4 and is not a
+known pooler host (the boolean fingerprint of the direct db.<ref> host
+with only the port changed to 6543), and the DIRECT_URL host is not a
+supabase domain at all. Root cause: hostname never changed to the
+pooler host. Fix delivered to the owner: paste both full URI strings
+from the Supabase Connect panel (ref in the USERNAME, pooler host in
+the hostname), redeploy. Awaiting owner action; health watch armed.
