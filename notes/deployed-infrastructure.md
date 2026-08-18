@@ -96,3 +96,15 @@ so it must serve both variables. Recorded for M1-P2 and all future env
 work. Remaining for full M1-P1 closure: the owner completes one
 sign-up through the deployed app (the db-backed request witness), then
 row verification closes criterion 0.6.
+
+M1-P1 DEPLOY-VERIFY CLOSED (2026-08-18). Criterion 0.6 discharged in
+full: deployed URL serves the app (observed), deployed schema applied
+with consistent Prisma history (observed), and the database-backed
+request through the deployed app completed end to end: the owner
+signed up in their browser and the data side shows auth_users=1,
+users=1, households=1 with a named household. Every M1-P1 acceptance
+criterion is now executed-and-green. The phase that began with the
+walking-skeleton dispatch is complete: implemented, dual clean-room
+reviewed, fix rounds applied and delta-verified, merged under DR-0012
+with DR-0003 arbitration, deployed, and verified against the live
+environment with the owner as first real user.
