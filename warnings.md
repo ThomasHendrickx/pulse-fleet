@@ -21,3 +21,11 @@ Appended to every composed brief. Facts, measured in this fleet's container.
 4. Outbound HTTPS goes through a TLS-reterminating proxy with CA bundle
    /root/.ccr/ca-bundle.crt. npm is pre-wired. Do not disable TLS
    verification anywhere.
+5. Deployed database endpoints for the pulse Supabase project: the
+   direct connection AND the transaction pooler both live on the
+   IPv6-only db.ygsarzjqosqmkqibqogk.supabase.co host and are
+   unreachable from IPv4-only environments (Vercel included). The
+   SESSION POOLER (aws-0-eu-central-1.pooler.supabase.com:5432, project
+   ref in the username) is the only IPv4 endpoint and serves BOTH
+   DATABASE_URL and DIRECT_URL in deployed environments. Local work
+   keeps using the local supabase stack, pinned per warning 1.
