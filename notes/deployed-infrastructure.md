@@ -78,3 +78,10 @@ supabase domain at all. Root cause: hostname never changed to the
 pooler host. Fix delivered to the owner: paste both full URI strings
 from the Supabase Connect panel (ref in the USERNAME, pooler host in
 the hostname), redeploy. Awaiting owner action; health watch armed.
+
+WATCH PARKED (2026-08-18 13:00Z): deploy-verify health unchanged (same
+P1001 fingerprint, poolers reachable, env hosts still wrong). Automated
+checks end here per plan; closure resumes when the owner replaces the
+two Vercel connection strings with the Supabase Connect panel values
+and redeploys. Verification path on resume: /api/health/db ok, then
+row verification, then M1-P1 closure.
