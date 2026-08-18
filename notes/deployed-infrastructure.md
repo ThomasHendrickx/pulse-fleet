@@ -85,3 +85,14 @@ checks end here per plan; closure resumes when the owner replaces the
 two Vercel connection strings with the Supabase Connect panel values
 and redeploys. Verification path on resume: /api/health/db ok, then
 row verification, then M1-P1 closure.
+
+DEPLOY-VERIFY GREEN (2026-08-18): /api/health/db returns status ok,
+db reachable, after the owner set BOTH DATABASE_URL and DIRECT_URL to
+the session pooler string (aws-0-eu-central-1.pooler.supabase.com:5432,
+ref in username). Root cause final form: this project exposes
+transaction pooling on the db.<ref> host, which like the direct
+connection is IPv6-only; the session pooler is the only IPv4 endpoint,
+so it must serve both variables. Recorded for M1-P2 and all future env
+work. Remaining for full M1-P1 closure: the owner completes one
+sign-up through the deployed app (the db-backed request witness), then
+row verification closes criterion 0.6.
