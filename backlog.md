@@ -9,3 +9,20 @@
 - Fleet-container tuition: Playwright chromium cannot reach vercel.app through the egress relay (TLS dies in-tunnel; curl unaffected; CA, ECH, ML-KEM ruled out). Production-URL e2e runs need either a relay fix or an owner-side runner. Recorded during M1-P1 deploy-verify.
 
 - M1-P1 CLOSED including deploy-verify (2026-08-18). Next dispatch: M1-P2 (import), which also carries the RLS migration and the two tracked lows CR-006/CR-007 from the M1-P1 review.
+
+## M1-P2 merged-with low findings (DR-0012 condition 2 tracking)
+
+- CR-208 (hazard delta, low): a negative value inside a Debit-headed
+  column parses sign-inverted; pre-exists on the two-populated-column
+  path, F3 only widened reachability. Fix: fail loud on signed values in
+  directional columns. Owed to the next import-touching round (M1-P3 or
+  first parser follow-up).
+- CR-209 (hazard delta, low): parseSourceProfileSpec accepts
+  case-colliding indicator tokens (debitValue "X", creditValue "x"),
+  making the credit token unreachable. Fix: reject equal-after-uppercase
+  pairs. Same owner as CR-208.
+- M1P2-C6 (owner decision pending): second same-format card binds to the
+  first card's account; transparency shipped (landing account always
+  named), full fix needs an owner call between per-upload account choice
+  when a household holds 2+ accounts on one profile spec, or
+  file-carried card identity once M1P2-C1 verifies real CSV layouts.
