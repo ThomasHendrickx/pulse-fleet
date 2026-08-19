@@ -108,3 +108,19 @@ walking-skeleton dispatch is complete: implemented, dual clean-room
 reviewed, fix rounds applied and delta-verified, merged under DR-0012
 with DR-0003 arbitration, deployed, and verified against the live
 environment with the owner as first real user.
+
+## M1-P2 deploy record (2026-08-19)
+
+- Merge: PR #9 squash, main 12de8f56, phase head reviewed 41ff037.
+- Migration 20260818154929_import_facts_and_declarations applied to the
+  deployed project via the Supabase management API (apply_migration),
+  followed by a hand-written _prisma_migrations row with the file's
+  sha256 (54668add33caefd56c863dff0646057b55d95528f0773c0ea2fe7dbc3e846473),
+  same route as the M1-P1 baseline. All six public tables verified
+  rowsecurity=true post-apply.
+- Verdicts landed on pulse main as four commits (fcd2c52, 322cfd7,
+  634a51b, dcee344) mirroring the M1-P1 pattern; scope amendments
+  cfbf722 and d311950 preceded the merge.
+- Deploy verification: /import route presence plus /api/health/db ok on
+  the production alias (Vercel auto-deploy from main); live browser e2e
+  still owner-side only (Playwright TLS relay limitation, see tuition).
