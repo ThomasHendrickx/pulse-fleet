@@ -21,8 +21,12 @@
   case-colliding indicator tokens (debitValue "X", creditValue "x"),
   making the credit token unreachable. Fix: reject equal-after-uppercase
   pairs. Same owner as CR-208.
-- M1P2-C6 (owner decision pending): second same-format card binds to the
-  first card's account; transparency shipped (landing account always
-  named), full fix needs an owner call between per-upload account choice
-  when a household holds 2+ accounts on one profile spec, or
-  file-carried card identity once M1P2-C1 verifies real CSV layouts.
+- M1P2-C6: ANSWERED by the owner (2026-08-19), question judged empty.
+  Owner's model: transactions are on an account; cards are access to
+  perform transactions on an account; this version does not care who
+  performed a transaction, only what the transactions are. For a credit
+  card the statement is the account statement and there is only ever a
+  one-one card-account relationship in this household, so the
+  two-same-format-cards scenario does not arise. Binding behaviour stays
+  as shipped (spec-equality plus the landing-account transparency from
+  fix round 1). No code change owed.
