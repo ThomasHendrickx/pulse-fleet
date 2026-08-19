@@ -29,3 +29,8 @@ Appended to every composed brief. Facts, measured in this fleet's container.
    ref in the username) is the only IPv4 endpoint and serves BOTH
    DATABASE_URL and DIRECT_URL in deployed environments. Local work
    keeps using the local supabase stack, pinned per warning 1.
+6. Ambient foreign SUPABASE_* and DATABASE_URL variables override .env for
+   the Playwright webServer as well as Prisma: when running npm run
+   test:e2e, pin all five values (DATABASE_URL, DIRECT_URL,
+   NEXT_PUBLIC_SUPABASE_URL, the publishable key and the secret key) to
+   the local stack in the invoking shell, not only the Prisma pair.
