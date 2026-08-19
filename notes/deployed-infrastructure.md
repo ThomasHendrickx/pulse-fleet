@@ -111,7 +111,9 @@ environment with the owner as first real user.
 
 ## M1-P2 deploy record (2026-08-19)
 
-- Merge: PR #9 squash, main 12de8f56, phase head reviewed 41ff037.
+- Merge: PR #9 squash, main 12de8f56, landed the PRE-FIX head 10beb40
+  by mistake (see backlog tuition 2026-08-19); repaired by PR #10 squash,
+  main 6fc43c9, which landed the reviewed head 41ff037's exact tree.
 - Migration 20260818154929_import_facts_and_declarations applied to the
   deployed project via the Supabase management API (apply_migration),
   followed by a hand-written _prisma_migrations row with the file's

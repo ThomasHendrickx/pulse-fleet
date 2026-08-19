@@ -30,3 +30,21 @@
   two-same-format-cards scenario does not arise. Binding behaviour stays
   as shipped (spec-equality plus the landing-account transparency from
   fix round 1). No code change owed.
+
+## Tuition: M1-P2 merge landed the wrong head (2026-08-19)
+
+PR #9 was squash-merged while origin's claude/m1-p2-import still pointed
+at 10beb40: the implementer's report claimed the fix round was pushed
+(10beb40..41ff037) but the push never landed, and the orchestrator
+merged without comparing the PR's head sha to the reviewed head. Main
+carried the pre-fix tree for about ten hours; the deployed build did
+too. Caught by the M1-P3 implementer's base verification (CR-209's fix
+target missing from main). Repair: reviewed head pushed, main merged
+into the branch with the branch side kept for double-changed files
+(main's side was by construction the branch's own older version), gates
+re-run on the reconciled tree, squash-merged as PR #10 (main 6fc43c9)
+with the head sha verified against the PR object this time. Standing
+rule from this tuition: a merge is dispatched only after reading the PR
+head sha from the PR object and matching it to the reviewed head, and a
+reported push is verified with git ls-remote before any paperwork cites
+it.
