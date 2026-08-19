@@ -48,3 +48,15 @@ rule from this tuition: a merge is dispatched only after reading the PR
 head sha from the PR object and matching it to the reviewed head, and a
 reported push is verified with git ls-remote before any paperwork cites
 it.
+
+## M1-P3 merged-with low finding (DR-0012 condition 2 tracking)
+
+- CR-308 (hazard delta round 2, low): stripCurrencyNoise is a single
+  regex pass, not a fixpoint, so an adversarial interleaved-letter cell
+  (EEURUR-742,10) reconstructs a signed value after one strip and slips
+  the unsigned entry point; every realistic export shape is refused.
+  One-line fix (reject negative magnitude in the unsigned entry, or
+  strip to fixpoint) plus a red witness. Owed to M1-P4 or the next
+  parser-touching round. The fix commentary's absolute claim ("can
+  never diverge again") is falsified by this construction (R-087);
+  correct the comment with the fix.
