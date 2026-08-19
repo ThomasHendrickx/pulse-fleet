@@ -126,3 +126,20 @@ environment with the owner as first real user.
 - Deploy verification: /import route presence plus /api/health/db ok on
   the production alias (Vercel auto-deploy from main); live browser e2e
   still owner-side only (Playwright TLS relay limitation, see tuition).
+
+## M1-P3 deploy record (2026-08-19)
+
+- Merge: PR #11 squash, main 343dbfc, reviewed head cd788c4 verified
+  equal to the PR object's head sha before merging (tuition rule
+  applied). Verdicts landed on main as six commits (both lenses, three
+  rounds each).
+- Migration 20260819152307_transfer_links applied via the management
+  API plus hand-written _prisma_migrations row (sha256
+  4be95f20cc65b34b463558eb3ceaf3c28ac6f117b5a9a80fe0b091f70dd74663);
+  rowsecurity=t verified live.
+- Review effort: criteria APPROVE round 0 (zero findings, 13 mutations
+  across rounds, three from-zero databases); hazard two fix rounds
+  (CR-301 critical settlement window flip, CR-302 re-parse ordinal
+  subset, CR-303 window-scoped refunds, CR-304 crash marker, CR-305/6
+  lows, then CR-307 medium from its own delta sweep), APPROVE at
+  cd788c4. CR-308 low tracked in backlog.
