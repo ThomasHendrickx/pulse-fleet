@@ -163,3 +163,23 @@ environment with the owner as first real user.
   caught immediately, fleet main reset and force-pushed clean, verdicts
   re-landed on pulse main. Standing rule: repo-mutating sequences pin
   their repo with git -C, never rely on inherited cwd.
+
+## M1-P5 deploy record and M1 milestone closure (2026-08-20)
+
+- Merge: PR #13 squash, main e4ea3ba, reviewed head c7b6507 verified
+  equal to the PR object's head before merging; post-merge main diffs
+  empty against the reviewed head on all code paths. No migrations this
+  phase, deployed schema unchanged at 5 applied migrations.
+- Review: three rounds per lens. Criteria APPROVE throughout with
+  independent fixture-byte re-derivation and the full DR-0001 chain
+  re-executed on from-zero databases each round. Hazard drove two fix
+  rounds (CR-501 high: three executed panel-lying constructions, all
+  now impossible with the cause partition exact; CR-502/503 medium;
+  four lows) and closed the ledger with zero unresolved findings at any
+  severity. Nothing rides to the backlog from this phase.
+- DR-0001 evidence at the release head: typecheck 0, lint 0,
+  gate:tokens 0, 249/249 fast gate, 12/12 e2e, one commit.
+- THE M1 WALKING SKELETON IS COMPLETE (slices 0 to 4, five phases, five
+  squash merges, every one dual-reviewed under DR-0012/DR-0003).
+  DR-0002 now gates M2: the owner uses Pulse for one real month, then
+  decides whether slices 5 and 6 still look right.
