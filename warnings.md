@@ -37,3 +37,10 @@ Appended to every composed brief. Facts, measured in this fleet's container.
 7. The local auth stack accumulates e2e users across runs: any supabase
    admin listUsers existence check must paginate (the one-page check in
    prisma/seed.ts broke db:reset past 50 auth users; fixed in M1-P4).
+8. Playwright positional test filters substring-match the full path
+   INCLUDING the worktree directory name; in fleet worktrees use -g to
+   target tests. After sudo dockerd, the supabase auth container needs
+   roughly 30 seconds before seeding or admin API calls succeed. Next.js
+   infers a workspace root when multiple lockfiles are visible; fleet
+   worktrees can trip this, pin turbopack.root or ignore the warning
+   knowingly.
