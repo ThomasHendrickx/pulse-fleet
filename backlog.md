@@ -60,3 +60,10 @@ it.
   parser-touching round. The fix commentary's absolute claim ("can
   never diverge again") is falsified by this construction (R-087);
   correct the comment with the fix.
+
+## Hygiene, tracked
+
+- Pre-existing em dash in messages/*.json merchantsBody (CLAUDE.md rule 7
+  violation, on main since before M1-P4, found by the M1-P4 implementer,
+  outside its scope). Owed to M1-P5, whose declared scope includes the
+  catalogs.

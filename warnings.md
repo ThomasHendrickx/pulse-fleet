@@ -34,3 +34,6 @@ Appended to every composed brief. Facts, measured in this fleet's container.
    test:e2e, pin all five values (DATABASE_URL, DIRECT_URL,
    NEXT_PUBLIC_SUPABASE_URL, the publishable key and the secret key) to
    the local stack in the invoking shell, not only the Prisma pair.
+7. The local auth stack accumulates e2e users across runs: any supabase
+   admin listUsers existence check must paginate (the one-page check in
+   prisma/seed.ts broke db:reset past 50 auth users; fixed in M1-P4).
