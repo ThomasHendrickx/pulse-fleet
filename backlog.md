@@ -67,3 +67,12 @@ it.
   violation, on main since before M1-P4, found by the M1-P4 implementer,
   outside its scope). Owed to M1-P5, whose declared scope includes the
   catalogs.
+
+## M1-P4 merged-with low finding (DR-0012 condition 2 tracking)
+
+- CR-404 (hazard delta, low, R-087): comments at the one-primary
+  migration and the MerchantTag model claim the partial index is
+  "asserted by name and predicate", but the suite's regex accepts any
+  index name (table, column and predicate ARE pinned). One line: pin
+  the name in resolve-merchants.test.ts's regex or reword both
+  comments. Owed to M1-P5.
