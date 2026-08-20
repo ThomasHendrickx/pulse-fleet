@@ -143,3 +143,23 @@ environment with the owner as first real user.
   subset, CR-303 window-scoped refunds, CR-304 crash marker, CR-305/6
   lows, then CR-307 medium from its own delta sweep), APPROVE at
   cd788c4. CR-308 low tracked in backlog.
+
+## M1-P4 deploy record (2026-08-20)
+
+- Merge: PR #12 squash, main 05ac512, reviewed head b021f9b verified
+  equal to the PR object's head sha before merging. Verdicts on main as
+  four commits.
+- Migrations 20260820073725_merchants_rules_and_tags and
+  20260820084740_one_primary_per_merchant applied via the management
+  API with baseline rows (sha256 9c2cbec7..., 0099b846...); live checks:
+  rls_tables=11, one-primary partial index present, migrations table at
+  5 rows.
+- Review: criteria APPROVE zero findings both rounds; hazard three lows
+  fixed in a micro round before merge (the tag-primary race measured
+  19/20 reproducible pre-fix, 0/20 post), APPROVE at b021f9b. CR-404
+  low tracked, owed to M1-P5.
+- Incident (fleet-side only): a mid-sequence cd left the shell in the
+  fleet repo, landing four pulse verdict commits on pulse-fleet main;
+  caught immediately, fleet main reset and force-pushed clean, verdicts
+  re-landed on pulse main. Standing rule: repo-mutating sequences pin
+  their repo with git -C, never rely on inherited cwd.
