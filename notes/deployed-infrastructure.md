@@ -203,3 +203,26 @@ environment with the owner as first real user.
 - CR-903's chromium e2e crashes root-caused to container disk at 100
   percent; 21GB reclaimed (warning 10), merge witness 19/19 captured on
   healthy disk.
+
+## M3-P2 deploy-verify saga closure (2026-08-21)
+
+Owner-reported /import 500 on PDF upload. Three micro rounds in the
+M1-P1 pattern (PRs #17, #18, #19; the first dual-reviewed, the latter
+two as observable micro rounds under the deploy-verify precedent):
+1. 6775e18: pages decoupled from module availability, /api/health/pdf
+   staged-boolean probe, prod-mode smoke in the gate, tracing includes,
+   engines pin. Probe stayed red: moduleLoad failed.
+2. 971ab57: pdf engine bundled via literal specifiers with the
+   pdfjsWorker global short-circuiting pdf.js's computed import;
+   external packaging dependence removed, witnessed by deleting the
+   package locally. Probe named ReferenceError.
+3. c51f95a: DOMMatrix. pdf.js polyfills it from optional native
+   @napi-rs/canvas which never ships in a deployed bundle; guarded
+   minimal 2D-affine shim, green under Node 18 and no-native Node 26,
+   extraction byte-exact. DEPLOYED PROBE GREEN: {"status":"ok"} with
+   real server-side extraction.
+Standing caveats: engines pin does not visibly control Vercel's
+runtime (owner may set Node 22.x in project settings); the app's own
+floor is Node 20+ (instanceof File). Escaped-defect mechanism (gate
+exercised next dev only) fixed structurally with the chromium-prod
+project.
