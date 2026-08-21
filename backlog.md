@@ -97,3 +97,18 @@ scout phase M0-P2). The navigation defect rides into the v0.2 plan as
 an early phase per the owner feedback. Real statement PDFs exist in
 this container's uploads directory as format reference for the planning
 and build work; they are NEVER committed, fixtures stay synthetic.
+
+## Tuition: desktop-blind UI criteria (2026-08-21)
+
+The M3-P1 navigation shipped desktop-focused and broke on the owner's
+phone (sign out pushed off screen) despite zero-finding reviews: every
+gate and both reviews ran Playwright's default desktop viewport because
+the phase criteria never named a phone viewport, and the plan had
+parked mobile-first work at M3-P4. The reviews verified a blind
+contract faithfully; the contract was wrong for a mobile-primary owner.
+Standing rule from this tuition: every UI-touching phase's acceptance
+criteria MUST include a phone-viewport (390x844) assertion covering the
+phase's surfaces (visibility of all controls, no horizontal scroll),
+and UI review dispatches name the owner's device class explicitly.
+Applied: pulse main 0a49ef7 adds criterion 1.5 to M3-P1; a defect round
+is running; M3-P2 and later phases inherit the rule at dispatch.
