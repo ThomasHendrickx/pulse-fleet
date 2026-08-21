@@ -183,3 +183,14 @@ environment with the owner as first real user.
   squash merges, every one dual-reviewed under DR-0012/DR-0003).
   DR-0002 now gates M2: the owner uses Pulse for one real month, then
   decides whether slices 5 and 6 still look right.
+
+## M3-P1 closure (2026-08-21)
+
+- Navigation merged twice: PR #14 (7796fc9, the phase) and PR #15
+  (155509e, the owner-reported mobile defect round). Verified heads both
+  times; the CR-701 audit-trail correction independently re-verified by
+  orchestrator grep runs pre-merge.
+- Owner feedback loop worked as designed: deployed, owner broke it on a
+  phone within hours, criterion amended (1.5 phone viewport), red-first
+  fix caught a second latent overflow, standing phone-viewport rule now
+  in tuition for all UI phases.
