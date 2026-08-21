@@ -226,3 +226,25 @@ promoting mobile-first from a per-phase assertion to a declared
 project constraint (the pulse-frontend skill currently says
 desktop-first at SKILL.md:113; M3-P4 was already scoped to revise that
 one line, which is far too narrow a fix).
+
+## M3-P6 merged-with lows (DR-0012 condition 2 tracking)
+
+- CR-05 (orchestrator-held): npm ci fails under npm 10 / Node 22 with a
+  missing @swc/helpers lock entry while package.json pins engines 22.x.
+  Not introduced by M3-P6; probed not to threaten the deployed build (no
+  workflow runs npm ci). Base-branch chore.
+- M3P6-C20 (from HZ-12): the bare Dutch card-number label word remains
+  reachable by an ordinary Dutch noun standing before four four-character
+  groups. The implementer declined the field-boundary anchor with a
+  measurement (the preceding token is two letters on 15 of 23 real card
+  rows, so a short-token anchor still admits the French idiom the finding
+  named) and narrowed the vocabulary instead: bare form Dutch-only, with
+  negative pins. Unreachable on all 215 observed descriptors. Revisit
+  when a second bank grammar lands.
+- M3P6-C21 (from CR-11): nothing executes a rendered gap-row STRING
+  assertion; the site is covered by the derivation test, and the e2e now
+  asserts the zero so the claim cannot go stale. A fixture producing gap
+  rows would close it.
+- Standing from the hazard lens: a card number printed with NO label is
+  masked by nothing (the declared price of grammar anchoring), and prose
+  in files a branch does not touch has no executable check.
