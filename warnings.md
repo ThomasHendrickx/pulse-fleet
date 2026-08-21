@@ -44,3 +44,10 @@ Appended to every composed brief. Facts, measured in this fleet's container.
    infers a workspace root when multiple lockfiles are visible; fleet
    worktrees can trip this, pin turbopack.root or ignore the warning
    knowingly.
+9. The real statement uploads' FILE NAMES themselves embed identifiers
+   (an IBAN plus statement date; a document reference). Never write the
+   full filenames into any note, commit, or report: refer to the uploads
+   by their 8-hex prefix only (0f79fa3d = KBC card, 39bada64 = Belfius
+   current account; the M3-P2 dispatch had this mapping backwards). One
+   leak via notes happened in M3-P2 and was scrubbed with a history
+   rewrite before anything consumed the branch.
