@@ -1,0 +1,142 @@
+# Orchestrator dispatch declaration for the pulse v0.2 plan-writing scout
+# task. This is NOT the v0.2 delivery plan; it declares the single scout
+# phase that produces that plan. Validates against schemas/plan.schema.json.
+kind: plan
+status: approved
+baseline-commit: e4ea3ba
+binding-rule: >-
+  If it is not written here, it is not being made. Unanswered questions go to
+  the orchestrator.
+process-summary: >-
+  Orchestrated delivery under the full mode: verified plan, adversarial plan
+  review, one phase per branch, dual clean-room review before merge, merge
+  authority delegated under DR-0012's conditions.
+standing-context: |
+  The M1 walking skeleton is complete and deployed: five phases merged
+  (sign-in and household, CSV import, interpretation with the
+  reconciliation identity, merchants, month view), DR-0001 release
+  verification green at the release head. First live use produced two
+  owner feedback items (fleet backlog, DR-0002 feedback log, 2026-08-21):
+  the app has no general navigation, and the missing PDF import path makes
+  the product close to unusable for the owner, who exports PDFs on mobile
+  and has halted testing until PDF import exists. Owner-directed
+  sequencing: the v0.2 work comes before the DR-0002 one-real-month test.
+  The v0.2 intake is delivery/intake/pulse-v0.2-pdf-addendum.md, committed
+  on main; its section 5 rule amendments already bind v0.1 and are
+  implemented. Two real statement PDFs (one Belfius current account, one
+  KBC Mastercard) exist in this container at
+  /root/.claude/uploads/e8dfc624-eaf2-5480-bcf2-af6a168fb888/ as format
+  reference; they are never committed and never leave the container;
+  committed fixtures are synthetic derivatives with invented identifiers.
+report-code-disagreement: []
+decisions: []
+open-questions: []
+parked: []
+phases:
+  - id: M0-P2
+    branch: claude/m0-p2-plan-v02
+    intent: >-
+      Write the pulse v0.2 delivery plan from the v0.2 addendum and the
+      owner's first-use feedback, as delivery/plan/pulse-v02.yaml, a plan
+      instance that validates against the kernel's plan schema.
+    grounding: >-
+      delivery/intake/pulse-v0.2-pdf-addendum.md is the input report (PDF
+      parsing, layout templates, the balance contract, mobile share-sheet
+      upload). The fleet backlog's DR-0002 feedback log carries the owner's
+      two feedback items verbatim; the navigation gap is phase-blocking for
+      any use and rides into this plan as an early phase. The repository at
+      e4ea3ba carries the whole M1 product; the plan builds on what is
+      there, not on assumptions.
+    severity: high
+    verified-root-cause: >-
+      Not a defect phase; the scout produces the v0.2 delivery plan. The
+      verification-first step exists because the addendum makes claims
+      about PDF structure and about the v1 codebase that the plan may only
+      build on after checking them against the tree at the baseline commit
+      and against the two real statement PDFs in the container uploads.
+    steps:
+      - kind: verification-first
+        text: >-
+          Verify every claim the addendum makes against the repository at
+          the baseline commit (file and line) and against the two real
+          statement PDFs in the container uploads directory (structure
+          only; no content is copied anywhere), and record every
+          disagreement in the plan's report-code-disagreement section
+          before any phase is planned on it. Also verify what the M1 tree
+          already provides that v0.2 builds on: the SourceProfile-driven
+          parser, the dedup recipe with the addendum's section 5 semantics,
+          the import status machine, and the rawLine/rawContent facts
+          columns.
+      - text: >-
+          Write the delivery plan as delivery/plan/pulse-v02.yaml, phased
+          with one early phase for general navigation (the owner's first
+          feedback item: header navigation and an empty state that links
+          to the import screen), then the PDF import path per the
+          addendum, every acceptance criterion falsifiable, hazard classes
+          declared per phase, fixtures synthetic only with the real PDFs
+          never committed, and product questions flagged as decision
+          records rather than decided.
+      - text: >-
+          Validate the plan against the kernel schema and fix every
+          diagnostic: npx tiphys validate --type plan --context . must
+          exit 0 in the worktree.
+    files-to-touch:
+      - delivery/plan/pulse-v02.yaml
+    extras: []
+    acceptance:
+      - id: "1"
+        criterion: >-
+          npx tiphys validate --type plan --context <worktree>
+          delivery/plan/pulse-v02.yaml exits 0.
+      - id: "2"
+        criterion: >-
+          The plan's report-code-disagreement section lists every addendum
+          claim checked, each with a file reference and a verified flag,
+          including the claims checked against the real PDFs' structure,
+          and it is non-empty or the plan states in standing-context why
+          no claim needed verification.
+      - id: "3"
+        criterion: >-
+          Every phase carries at least one acceptance criterion that names
+          a command and an exit code or an observable output; no criterion
+          contains the words "works correctly".
+      - id: "4"
+        criterion: >-
+          No product question is decided in the plan: each is flagged in
+          open-questions with a decision-record id, and grep of the plan
+          for those ids shows each one referenced by at least one phase
+          slot.
+      - id: "5"
+        criterion: >-
+          The intake documents under delivery/intake/ are byte-identical
+          to the baseline commit: git diff e4ea3ba -- delivery/intake/ is
+          empty; and git grep over the plan and any committed fixture for
+          the real PDFs' account identifiers exits 1.
+    hazard-classes:
+      - id: H1
+        statement: >-
+          The plan silently decides a product question the addendum left
+          open, burying an irreversible choice in a step.
+        addressed-by: criterion 4
+      - id: H2
+        statement: >-
+          The plan builds a phase on an addendum claim that does not
+          survive contact with the repository or the real statements,
+          planning work that does not exist.
+        addressed-by: criterion 2
+      - id: H3
+        statement: >-
+          Real statement content leaks into the repository through the
+          plan or its fixtures.
+        addressed-by: criterion 5
+    migrations: none
+    conflicts-with: []
+    parallelizable: false
+    citations:
+      - R-005
+      - R-010a
+    fill-in:
+      filled: false
+      root-cause: ""
+      files: []
+      fix-shape: ""
