@@ -194,3 +194,12 @@ environment with the owner as first real user.
   phone within hours, criterion amended (1.5 phone viewport), red-first
   fix caught a second latent overflow, standing phone-viewport rule now
   in tuition for all UI phases.
+
+## M3-P2 closure (2026-08-21)
+
+- Merge: PR #16 squash, main a577e51, code head 22f717b verified (docs
+  head 960f1f3). No migration. Real-statement parse verified in both
+  review rounds; privacy scrubs clean across full history.
+- CR-903's chromium e2e crashes root-caused to container disk at 100
+  percent; 21GB reclaimed (warning 10), merge witness 19/19 captured on
+  healthy disk.
