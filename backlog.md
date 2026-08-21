@@ -192,3 +192,37 @@ count (and, once M3-P3 lands, the balance identity's own numbers) on
 the confirm screen before the decision. Natural home is M3-P4 (mobile
 import flow, already touches this UI); needs a plan phase amendment
 since M3-P4's criteria do not name it.
+
+## Owner verdict on mobile, 2026-08-21: 2/10 quality, 1/10 usability
+
+Owner, on the deployed month view at phone width: "looks bad to say it
+politely... I can't use this in any form. the total lack of mobile
+first in this whole project."
+
+Measured root cause, not a guess: `grep -c "@media" src/app/globals.css`
+returns 0. There is no phone layout anywhere in the product. The month
+view is `.month-grid { grid-template-columns: minmax(0,1fr)
+var(--layout-rail) }` at globals.css:681-683, an unconditional desktop
+two-column grid with a 372px fixed rail. Every screen was built to the
+committed desktop prototype; the only mobile accommodation in the tree
+is the flex-wrap added reactively in M3-P1's defect round.
+
+ORCHESTRATOR ERROR, named plainly: after the owner's first mobile
+report I set the standing rule as "phone viewport 390x844: controls
+visible and clickable, no horizontal scrolling". That is a bar this
+screen PASSES while being unusable. I encoded the symptom the owner
+reported instead of the requirement the owner has, which is a product
+usable on the device they actually use. Every phase since has inherited
+that too-weak bar and passed it.
+
+In flight and relevant: M3-P6 (in delta review) replaces descriptor
+blobs with merchant names, masks the card number, and fixes the 424
+overflow on this exact screen. That materially improves it and does not
+make it good: it stays a desktop table on a phone.
+
+Proposed: a mobile-first phase for the month view and merchant review
+with criteria that measure usability rather than overflow, plus
+promoting mobile-first from a per-phase assertion to a declared
+project constraint (the pulse-frontend skill currently says
+desktop-first at SKILL.md:113; M3-P4 was already scoped to revise that
+one line, which is far too narrow a fix).
