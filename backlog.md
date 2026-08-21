@@ -134,3 +134,40 @@ is running; M3-P2 and later phases inherit the rule at dispatch.
   diagnosis channels sit below the collapse so no behavioural defect.
   Concrete edit on file (propagate the extractor's Result). Owed to the
   next parser-touching round alongside HZ-001-R and HZ-003-N.
+
+## Owner test of the deployed Belfius PDF import (2026-08-21)
+
+The parse itself is correct: dates, signs, integer cents, counterparty
+IBAN on transfer rows, the settlement debit, and multi-line description
+joining all match the statement. Two real defects and one decision came
+out of the owner's screenshot, measured against the real statement:
+
+1. MERCHANT GROUPING IS DEAD FOR CARD ROWS (high). merchantText falls
+   back to the full description when counterpartyName is null
+   (interpret-window.ts:87-88), which is every card payment. The
+   descriptor embeds the transaction's OWN date and amount plus the card
+   number and holder name, so every row is a unique string: measured on
+   the real statement, 15 card-payment rows normalise to 15 distinct
+   strings where there are only 5 real merchants. Consequence: naming a
+   merchant writes an EXACT rule that can never match a second
+   transaction, and the month view degenerates to one group per row.
+   The M1-P4 normaliser strips terminal noise, masked PANs, city and
+   date fragments, but none of its patterns match this real shape (the
+   embedded "18/06", "3,55 EUR", "KAART NR <16 digits>", "- Name", and
+   Belfius's own literal "<B>" marker all survive uppercase-only).
+   Root class: normalisation was built against assumed shapes, never
+   verified against a real descriptor. Same family as the mobile
+   viewport gap: no criterion demanded it.
+2. FULL CARD NUMBER RENDERED (medium, owner decision). Belfius prints
+   the unmasked PAN in the statement text (verified: two distinct
+   grouped-16 sequences in the real file), so storing it verbatim in
+   rawLine is correct and immutable by design. Rendering it in the
+   descriptor column is avoidable exposure: it appeared in the owner's
+   screenshot. Recommend masking at the DISPLAY layer only, facts
+   untouched.
+3. Descriptor readability on mobile follows from 1: once the normalised
+   merchant exists, the raw text should stop dominating the row.
+
+Disposition: proposed as phase M3-P6 (real-descriptor merchant
+normalisation plus PAN display masking), with the real statement's
+descriptor shapes as the fixture source, synthetic only.
