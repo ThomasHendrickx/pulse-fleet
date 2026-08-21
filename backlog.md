@@ -171,3 +171,24 @@ out of the owner's screenshot, measured against the real statement:
 Disposition: proposed as phase M3-P6 (real-descriptor merchant
 normalisation plus PAN display masking), with the real statement's
 descriptor shapes as the fixture source, synthetic only.
+
+## Owner question, 2026-08-21: the five-row preview
+
+Answered from the code, not from memory: the confirm screen's preview is
+`rows.slice(0, 5)` (import/[id]/page.tsx:76), while confirming ingests
+`parsed.value.rows`, the FULL parsed set (confirm-import.ts:115-126).
+So all rows import; five is a deliberate format-confirmation sample.
+Verified on the owner's re-uploaded statement (prefix 84742d93, same
+statement as 39bada64): 5 pages, 39 transaction rows detected.
+
+REAL GAP the question exposes: the confirm screen never states how many
+rows were found. The owner is asked to approve a format from five rows
+with no way to check the parser found 39 rather than 4, and the copy
+"First five rows, as Pulse reads them" implies a total that is never
+shown. The balance gate catches most row loss but the hazard review
+already found its zero-sum blind spot, so the count is the owner's own
+cross-check against the paper statement. Proposed: show the parsed row
+count (and, once M3-P3 lands, the balance identity's own numbers) on
+the confirm screen before the decision. Natural home is M3-P4 (mobile
+import flow, already touches this UI); needs a plan phase amendment
+since M3-P4's criteria do not name it.
