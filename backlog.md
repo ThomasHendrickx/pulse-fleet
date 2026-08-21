@@ -76,3 +76,24 @@ it.
   index name (table, column and predicate ARE pinned). One line: pin
   the name in resolve-merchants.test.ts's regex or reword both
   comments. Owed to M1-P5.
+
+## DR-0002 feedback log (owner, first live use, 2026-08-21)
+
+1. NAVIGATION MISSING, phase-blocking for use: the app has no general
+   navigation. The month view's empty state names the import action with
+   no link, and once data exists there is still no way to reach /import
+   or /merchants from the header. Owner's words: "no general navigation
+   so later imports past empty screen also won't work."
+2. PDF IMPORT IS ESSENTIAL, testing halted: "lack of pdf import makes it
+   close to unusable. pdf import path is essential for me. I won't test
+   anymore until it exists." The owner exports PDFs on mobile; CSV
+   requires PC banking. Sequencing consequence, owner-directed: the v0.2
+   PDF import addendum work comes BEFORE the DR-0002 one-real-month
+   test; DR-0002 stays open, its clock starts only when the owner can
+   actually feed Pulse from their phone.
+
+Disposition: v0.2 planning cycle dispatched (dispatch-plan-v02.yaml,
+scout phase M0-P2). The navigation defect rides into the v0.2 plan as
+an early phase per the owner feedback. Real statement PDFs exist in
+this container's uploads directory as format reference for the planning
+and build work; they are NEVER committed, fixtures stay synthetic.
