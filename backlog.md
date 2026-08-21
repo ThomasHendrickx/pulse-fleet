@@ -128,3 +128,9 @@ is running; M3-P2 and later phases inherit the rule at dispatch.
   owner is PDF-only in practice; stays parked unless the owner plans to
   mix formats. Tripwire plan edit remains the recommended shape if it
   ever activates.
+
+- HZ-007 (deploy-defect round, low): extractPages collapses both
+  extractor error kinds before the port, leaving dead mapping branches;
+  diagnosis channels sit below the collapse so no behavioural defect.
+  Concrete edit on file (propagate the extractor's Result). Owed to the
+  next parser-touching round alongside HZ-001-R and HZ-003-N.
