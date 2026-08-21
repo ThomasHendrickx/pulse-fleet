@@ -112,3 +112,19 @@ phase's surfaces (visibility of all controls, no horizontal scroll),
 and UI review dispatches name the owner's device class explicitly.
 Applied: pulse main 0a49ef7 adds criterion 1.5 to M3-P1; a defect round
 is running; M3-P2 and later phases inherit the rule at dispatch.
+
+## M3-P2 merged-with lows (DR-0012 condition 2 tracking)
+
+- HZ-001-R (hazard delta, low): a corrupted margin first-transaction
+  line with a zero amount drops silently (continuity has no lower
+  anchor, zero preserves the sum). Documented in code; not adversarially
+  reachable. Concrete fix on file (anchor continuity to the expected
+  first sequence). Owed to the next parser-touching round.
+- HZ-003-N (hazard delta, low, cosmetic): a fingerprint-matched
+  structure failure labels "unparseable" rather than
+  "layout-unsupported"; zero rows either way. Same owner.
+- HZ-004 (standing, plan-parked): cross-format duplication for the same
+  account-month (CSV plus PDF). Escalated to the owner 2026-08-21; the
+  owner is PDF-only in practice; stays parked unless the owner plans to
+  mix formats. Tripwire plan edit remains the recommended shape if it
+  ever activates.
