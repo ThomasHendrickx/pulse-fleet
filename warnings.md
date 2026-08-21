@@ -51,3 +51,9 @@ Appended to every composed brief. Facts, measured in this fleet's container.
    current account; the M3-P2 dispatch had this mapping backwards). One
    leak via notes happened in M3-P2 and was scrubbed with a history
    rewrite before anything consumed the branch.
+10. The container's disk fills up: each worktree clone carries ~1GB of
+    node_modules, and a full root filesystem manifests as MOVING
+    chromium "Page crashed" e2e failures (CR-903 root cause, 54MB free
+    at the time), not as a disk error. Before dispatching gate or e2e
+    work, check df; delete node_modules/.next from closed-phase
+    worktrees freely (regenerable; commits live in git).
