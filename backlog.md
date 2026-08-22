@@ -248,3 +248,30 @@ one line, which is far too narrow a fix).
 - Standing from the hazard lens: a card number printed with NO label is
   masked by nothing (the declared price of grammar anchoring), and prose
   in files a branch does not touch has no executable check.
+
+## M0-P3 corrections to the orchestrator's dispatch (2026-08-22)
+
+ORCHESTRATOR ERROR, corrected by the M0-P3 plan-writer and verified
+independently. dispatch-plan-mobile.yaml's verified-root-cause states that
+`.month-grid` is `grid-template-columns: minmax(0, 1fr) var(--layout-rail)`,
+a fixed two-column desktop grid. That was the text at e4ea3ba. At b560e85 it
+is a wrapping flex (globals.css:704 to :719), changed by 5f7b62c, so the
+top-level grid already collapses on a phone. I wrote a root cause from a
+stale reading and did not re-check it against the head I was dispatching on.
+
+What survives is still enough to carry the phase: `grep -c "@media"
+src/app/globals.css` returns 0, and globals.css:564 says "Desktop first". The
+real defect is one level down, at globals.css:756 (.month-columns) and :781
+(.month-row): three-column grids whose two amount tracks each carry
+`min-width: var(--space-14)`, 80px (tokens.css:121). Two 80px tracks plus two
+gaps inside 390px is what leaves the name column nothing.
+
+SETTLED, and recorded so M3-P7 does not spend a round on it. The plan-writer
+could not verify whether a viewport meta tag exists, could not render a page,
+and correctly recorded it verified: false as the amendment's highest-impact
+unverified claim. It does exist. Next's App Router injects it by default:
+`<meta name="viewport" content="width=device-width, initial-scale=1"/>`,
+observed in the live deployment's rendered head at /sign-in on 2026-08-22 and
+in a page capture taken earlier in the session. The phone is receiving
+device-width. The unusability is layout alone, not a missing viewport tag.
+Criterion 7.2 is still worth keeping as a pin against regression.
