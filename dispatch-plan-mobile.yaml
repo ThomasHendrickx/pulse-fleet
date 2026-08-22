@@ -1,0 +1,208 @@
+# Orchestrator dispatch declaration for the pulse mobile-rebuild planning
+# task. This is NOT a delivery plan for the rebuild; it declares the single
+# planning phase that amends delivery/plan/pulse-v02.yaml with that work.
+# Validates against schemas/plan.schema.json.
+kind: plan
+status: approved
+baseline-commit: b560e85
+binding-rule: >-
+  If it is not written here, it is not being made. Unanswered questions go to
+  the orchestrator.
+process-summary: >-
+  Orchestrated delivery under the full mode: verified plan, adversarial plan
+  review, one phase per branch, dual clean-room review before merge, merge
+  authority delegated under DR-0012's conditions.
+standing-context: |
+  v0.2 has merged M3-P1 (navigation), M3-P2 (Belfius PDF import, plus three
+  deploy-verify micro rounds) and M3-P6 (card-descriptor merchant grouping
+  and PAN masking). M3-P3 (KBC PDF) is implemented and green but its review
+  is paused. M3-P4 (mobile import flow) and M3-P5 (Android share target) are
+  unstarted.
+
+  On first real use of the month view the owner, on a phone, graded the
+  product 2/10 for quality and 1/10 for usability and named the cause: the
+  total lack of mobile first. This is accurate. src/app/globals.css carries
+  zero media queries (grep -c "@media" returns 0) and .month-grid is a
+  two-column desktop grid, so the month view has never had a phone layout at
+  all. The navigation defect round earlier in v0.2 fixed overflow only, which
+  is the wrong measure: a screen can have no horizontal scrolling and still be
+  unusable.
+
+  The orchestrator's own error is on the record in the fleet backlog: after
+  the first mobile report the standing criterion was set as "phone viewport:
+  controls visible and clickable, no horizontal scrolling", a bar the broken
+  month view passes. Criteria for this work must measure usability, not the
+  absence of overflow.
+
+  DR-0022 (owner, 2026-08-22) decides mobile first and supersedes the
+  "Desktop first ... Mobile is not a v1 target" paragraph in the
+  pulse-frontend skill. The owner approved a mockup of the rebuilt month view
+  and merchant review screen; it is committed at delivery/design/mobile-v02/
+  with a README stating what it fixes and why. The mockup is a layout
+  reference, not a component library: the product implements it with design
+  tokens, never with the mockup's inline literals.
+
+  The owner's real data is in the deployed database: one account, one
+  interpreted import, 39 transactions spanning 2026-06-16 to 2026-07-16, zero
+  merchant rules. The rebuilt screens are used against that shape first.
+report-code-disagreement: []
+decisions:
+  - id: D-1
+    statement: >-
+      Mobile first supersedes the desktop-first charter line, per DR-0022,
+      decided by the owner on 2026-08-22. Every screen is designed at phone
+      width first and widened from there.
+open-questions: []
+parked: []
+phases:
+  - id: M0-P3
+    branch: claude/m0-p3-plan-mobile
+    intent: >-
+      Amend delivery/plan/pulse-v02.yaml with the mobile-first rebuild of the
+      month view and the merchant review screen, and with the project-level
+      constraint change DR-0022 requires, so that the amended plan still
+      validates against the kernel plan schema.
+    grounding: >-
+      delivery/design/mobile-v02/ is the owner-approved layout reference and
+      its README states the six things the mockup fixes. DR-0022 in the fleet
+      decisions directory is the decision being implemented. The shipped
+      screens at the baseline commit are the thing being replaced: read them
+      before planning their replacement, in particular src/app/globals.css
+      and the month view and merchant review route trees. The fleet backlog
+      carries the owner's verdict verbatim and the orchestrator's named error
+      about the wrong acceptance bar.
+    severity: high
+    verified-root-cause: >-
+      Not a defect phase; the scout amends the v0.2 delivery plan. The
+      verification-first step exists because the amendment must be grounded in
+      what the shipped screens actually do, not in the mockup alone: a plan
+      that assumes a component exists, or assumes a token exists, plans work
+      that does not exist.
+    steps:
+      - kind: verification-first
+        text: >-
+          Establish at the baseline commit, with file and line references,
+          what the two screens are today: every component the month view and
+          the merchant review route render, every layout rule in
+          src/app/globals.css they depend on, and which design tokens already
+          exist for the mockup's needs. Name every token the mockup implies
+          that tokens.css does not yet carry, since a missing token must be
+          added to tokens.css before a component can use it. Record every
+          place the mockup and the shipped copy disagree in
+          report-code-disagreement, and resolve each in favour of the shipped
+          copy unless the mockup's difference is the point.
+      - text: >-
+          Plan the constraint change: the pulse-frontend skill's "Desktop
+          first. The import is a desk activity. Mobile is not a v1 target and
+          no effort is spent on it." paragraph is replaced by a mobile-first
+          constraint, in the same voice as the rest of that skill, and the
+          replacement is a deliverable of the rebuild phase. Do not plan an
+          edit to any file under delivery/intake/.
+      - text: >-
+          Plan the rebuild as one phase per screen if they are separable, or
+          one phase if the shared layout primitives make splitting them
+          dishonest; say which and why. Every acceptance criterion must
+          measure usability at phone width, not the absence of horizontal
+          overflow. At minimum, criteria must pin: a named viewport width;
+          minimum tap-target height for every row that navigates or opens;
+          that every figure on the screen at desktop width is still present at
+          phone width, none dropped and none truncated; that the
+          reconciliation answer is above the fold; and that the layout is one
+          column with income, spend and reserves in that order. State for each
+          criterion the command or observation that falsifies it.
+      - text: >-
+          Plan the regression guard. The e2e suite currently proves the month
+          view at desktop width only; the rebuild must not be provable only by
+          a screenshot. Say which Playwright projects or viewport fixtures are
+          added and which existing specs must run at both widths.
+      - text: >-
+          Amend the phase ordering and say where the rebuild sits relative to
+          the unstarted M3-P4 and M3-P5 and the paused M3-P3, with the reason.
+          Do not renumber existing phase ids.
+      - text: >-
+          Validate the amended plan against the kernel schema and fix every
+          diagnostic: npx tiphys validate --type plan --context . must exit 0
+          in the worktree.
+    files-to-touch:
+      - delivery/plan/pulse-v02.yaml
+    extras: []
+    acceptance:
+      - id: "1"
+        criterion: >-
+          npx tiphys validate --type plan --context <worktree>
+          delivery/plan/pulse-v02.yaml exits 0.
+      - id: "2"
+        criterion: >-
+          git diff <baseline> -- delivery/plan/pulse-v02.yaml shows additions
+          and amendments only: no existing phase id is removed or renumbered,
+          and no merged phase's acceptance criteria are weakened.
+      - id: "3"
+        criterion: >-
+          Every acceptance criterion on every new phase names a viewport width
+          or a command, and grep of the new phases for the phrases "horizontal
+          scroll", "no overflow", "looks good", "works correctly" and
+          "responsive" returns no criterion whose only measure is one of them.
+      - id: "4"
+        criterion: >-
+          The new phases include, as a deliverable, replacing the
+          pulse-frontend skill's desktop-first paragraph, and cite DR-0022 by
+          id. git diff <baseline> -- delivery/intake/ is empty.
+      - id: "5"
+        criterion: >-
+          report-code-disagreement is non-empty and each entry names a file
+          and line at the baseline commit, including every design token the
+          mockup implies that tokens.css does not carry.
+      - id: "6"
+        criterion: >-
+          The plan states the ordering of the rebuild against M3-P3, M3-P4 and
+          M3-P5 with a stated reason, and no new phase declares a schema
+          migration.
+    hazard-classes:
+      - id: H1
+        statement: >-
+          The plan repeats the orchestrator's error and sets an acceptance bar
+          the currently broken screen would pass.
+        addressed-by: criterion 3
+      - id: H2
+        statement: >-
+          The plan treats the mockup as the specification and silently drops
+          information the shipped screen carries, so the phone view is tidy
+          because it says less.
+        addressed-by: criterion 3
+      - id: H3
+        statement: >-
+          The plan grounds a phase on a component or a token that does not
+          exist at the baseline commit.
+        addressed-by: criterion 5
+      - id: H4
+        statement: >-
+          The amendment silently rewrites merged phases or the intake
+          documents.
+        addressed-by: criterion 2
+    migrations: none
+    conflicts-with: []
+    parallelizable: false
+    citations:
+      - R-005
+      - R-010a
+    fill-in:
+      filled: true
+      root-cause: >-
+        src/app/globals.css carries no media query at any width (grep -c
+        "@media" returns 0) and .month-grid is declared as
+        grid-template-columns: minmax(0, 1fr) var(--layout-rail), a fixed
+        two-column desktop grid. The month view therefore has no phone
+        layout to degrade from; it renders the desktop grid into a 360px
+        viewport. The charter made this deliberate (pulse-frontend skill,
+        "Desktop first ... Mobile is not a v1 target"), and the acceptance
+        bar the orchestrator set after the first mobile report measured
+        only overflow, which this screen does not exhibit, so review could
+        not catch it.
+      files:
+        - delivery/plan/pulse-v02.yaml
+      fix-shape: >-
+        Amend the v0.2 plan with the rebuild phases and with the
+        constraint change DR-0022 requires, grounded in the shipped
+        screens at the baseline commit and in the owner-approved mockup at
+        delivery/design/mobile-v02/, with acceptance criteria that measure
+        phone-width usability rather than the absence of overflow.

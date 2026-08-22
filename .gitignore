@@ -1,3 +1,6 @@
 state/
 worktrees/
 projects/
+
+# review-context scratch directories, never committed
+.ctx-*/
