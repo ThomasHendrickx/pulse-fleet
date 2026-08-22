@@ -70,3 +70,16 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     enforces both halves, joins the standing gate line in CLAUDE.md, and
     fails on any identifier that is not on that list, so a value taken
     from a real statement stops the build rather than reaching a review.
+12. THE PULSE REPOSITORY IS PUBLIC and the owner has decided on
+    2026-08-22 (DR-0024) that it stays public. Everything you commit is
+    world-readable the moment it is pushed, and history keeps it after
+    any later correction. Two real merchant descriptors, naming a shop
+    and a parking location taken from a real statement while drafting a
+    design mockup, reached it that way and were found by BOTH clean-room
+    lanes on M3-P3, not by any gate. `npm run gate:privacy` cannot see a
+    merchant name, a place name, a date or an amount inside a file,
+    because those look exactly like invented ones; its own header now
+    says so. Before you commit anything you wrote while looking at a
+    real document, read it back line by line and check every string
+    yourself. Checking one file of a set and generalising is exactly how
+    this got through.
