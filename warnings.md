@@ -57,3 +57,16 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     at the time), not as a disk error. Before dispatching gate or e2e
     work, check df; delete node_modules/.next from closed-phase
     worktrees freely (regenerable; commits live in git).
+11. HARD RULE, owner 2026-08-22: no data of any kind goes into a commit
+    message. No amount, no counterparty, no date from a row, no account
+    or card number, not even an invented one. A message says what
+    changed and why. It never carries a sample of the data, because a
+    reviewer reading a message cannot tell an invented figure from a
+    real one, and that is exactly how the M3-P3 leak survived three
+    pushes. The same applies to prose in reports, verdicts and notes.
+    Invented values live in fixtures only, and every account or card
+    number in the tree is listed with its provenance in
+    test/fixtures/allowed-identifiers.txt. `npm run gate:privacy`
+    enforces both halves, joins the standing gate line in CLAUDE.md, and
+    fails on any identifier that is not on that list, so a value taken
+    from a real statement stops the build rather than reaching a review.
