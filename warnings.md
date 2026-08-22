@@ -83,3 +83,12 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     real document, read it back line by line and check every string
     yourself. Checking one file of a set and generalising is exactly how
     this got through.
+13. `npx supabase start` fails in this container and the error names the
+    wrong component: an rlimit failure is printed right after "Starting
+    database from backup", but the process actually asking for a nofile
+    limit above the container's hard ceiling of 20000 is the
+    edge-runtime container, and `cap_sys_resource` is dropped so nothing
+    can raise it. Workaround, found in M3-P7: set `enabled = false`
+    under `[edge_runtime]` in supabase/config.toml, start the stack,
+    then revert. That file is TRACKED, so revert it before committing or
+    the change lands in the repository.
