@@ -1,0 +1,227 @@
+# Orchestrator dispatch declaration for the interaction-feedback planning
+# task. Declares the single planning phase that adds that work to
+# delivery/plan/pulse-v02.yaml. Validates against schemas/plan.schema.json.
+kind: plan
+status: approved
+baseline-commit: 89ed187
+binding-rule: >-
+  If it is not written here, it is not being made. Unanswered questions go to
+  the orchestrator.
+process-summary: >-
+  Orchestrated delivery under the full mode: verified plan, adversarial plan
+  review, one phase per branch, dual clean-room review before merge, merge
+  authority delegated under DR-0012's conditions.
+standing-context: |
+  The owner is now using the deployed app on a phone. Their report, verbatim:
+  "one thing to fix is the total lack of feedback I get when I press
+  something. buttons don't feel like button and after pressing, nothing
+  happens in the UI untill the full server cycle comes back".
+
+  Measured at the baseline commit, and it is total rather than partial:
+  src/app/globals.css carries FOUR :hover rules, all on navigation elements,
+  and ZERO :active rules, ZERO :disabled rules and ZERO transitions.
+  styles/tokens.css declares no duration, easing, motion or elevation token
+  of any kind. There is no prefers-reduced-motion block anywhere in the tree.
+  A grep over src/ for useFormStatus, useOptimistic, useTransition, isPending
+  and aria-busy returns nothing at all, and the whole application has exactly
+  ONE client component, src/platform/ui/nav-link.tsx. Every form is a plain
+  server-action form, so a press produces no visible change until the action
+  returns and the tree re-renders.
+
+  The six interactive surfaces are src/modules/import/ui/upload-form.tsx,
+  src/modules/import/ui/profile-confirmation.tsx,
+  src/modules/merchants/ui/merchant-review.tsx, src/app/(auth)/sign-in and
+  sign-up, and the sign-out form in src/app/(app)/layout.tsx. The server
+  actions behind them are in src/modules/{ledger,import,merchants}/ui/
+  actions.ts and src/platform/auth/actions.ts.
+
+  This is the second owner report of the same kind: the first was that the
+  month view was unusable on a phone, and the phase that answered it (M3-P7,
+  merged and deployed) established the pattern this work should follow, in
+  particular that acceptance criteria must measure the thing the owner
+  complained about rather than a proxy for it. The tap-target and layout work
+  is done; what is missing is that a control gives no sign it was pressed and
+  no sign that anything is happening.
+
+  Scope discipline from CLAUDE.md binds and is not negotiable here: no state
+  management library, no component library. React's own useFormStatus,
+  useOptimistic and useTransition are built in and are not libraries.
+report-code-disagreement: []
+decisions: []
+open-questions:
+  - DR-0025
+parked: []
+phases:
+  - id: M0-P4
+    branch: claude/m0-p4-plan-feedback
+    intent: >-
+      Add to delivery/plan/pulse-v02.yaml the phase or phases that give every
+      interactive control a pressed state, a disabled state and a visible
+      pending state, so a press is acknowledged immediately rather than only
+      when the server round trip completes.
+    grounding: >-
+      The owner's report, quoted verbatim in standing-context. The measured
+      state of the tree at the baseline commit: four hover rules, no active,
+      disabled, transition, duration or motion tokens, no reduced-motion
+      block, no pending-state API anywhere, one client component. The six
+      interactive surfaces and four server-action files named above. The
+      pulse-frontend skill governs server versus client component rules, the
+      design token system and the states this product must handle; read it
+      before planning any component change. M3-P7 in the same plan is the
+      worked example of a phase answering an owner usability report.
+    severity: high
+    verified-root-cause: >-
+      Every form in the application is a plain server-action form with no
+      client boundary, so React has no pending state to render and the DOM
+      does not change between the press and the server's response. Separately
+      the stylesheet declares no :active and no :disabled rule and no
+      transition, so a control has no pressed appearance even before any
+      network work begins. The two are independent causes of the same
+      complaint and both must be answered: a pressed state alone still leaves
+      a dead interval, and a pending state alone still leaves a control that
+      does not feel pressable.
+    steps:
+      - kind: verification-first
+        text: >-
+          Confirm at the baseline commit, with captured command output, the
+          counts this dispatch states: :hover, :active, :disabled, transition
+          and cursor rule counts in src/app/globals.css; the absence of any
+          duration, easing, motion or elevation token in styles/tokens.css;
+          the absence of prefers-reduced-motion anywhere; the empty result of
+          a grep for useFormStatus, useOptimistic, useTransition, isPending
+          and aria-busy over src/; and the list of client components. Record
+          every disagreement in report-code-disagreement before planning a
+          step on it. Also establish which of the six surfaces are server
+          components today and what turning any of them into a client
+          component would cost, since the pulse-frontend skill governs that
+          boundary and the plan may not cross it casually.
+      - text: >-
+          Plan the token work first. Any duration, easing or elevation value
+          the phase needs is added to styles/tokens.css before a rule uses
+          it, per CLAUDE.md non-negotiable 4, and the plan names each token
+          it expects to add. A prefers-reduced-motion block is part of this
+          work, not an afterthought.
+      - text: >-
+          Plan the pressed and disabled states for every interactive control:
+          the six surfaces named above plus navigation links and the month
+          step controls. State what a control looks like pressed, what it
+          looks like disabled, and that a disabled control cannot be pressed
+          twice.
+      - text: >-
+          Plan the pending state. Say for each surface what appears between
+          the press and the response, how quickly it appears, and what
+          happens to the control in the meantime. Decide and state where the
+          client boundary goes, and keep it as small as the job allows.
+      - text: >-
+          Raise DR-0025 as an open question and do not decide it. Optimism is
+          a product question in a finance product: a label shown before the
+          server confirms it can be wrong, and this application's rule is
+          that a screen never shows an unknown as though it were known. Write
+          the recommendation and the consequence of each option, and make
+          sure no criterion in the plan depends on the answer.
+      - text: >-
+          Every acceptance criterion must measure the owner's complaint
+          rather than a proxy. A criterion that asserts a CSS rule exists is
+          a proxy. A criterion that measures, in a browser, that the DOM
+          changes within a stated number of milliseconds of a press and
+          before the server responds, is not. Say for each criterion the
+          command or observation that falsifies it, and pin the phone
+          viewport as well as the desk one.
+      - text: >-
+          Validate the amended plan against the kernel schema and fix every
+          diagnostic.
+    files-to-touch:
+      - delivery/plan/pulse-v02.yaml
+    extras: []
+    acceptance:
+      - id: "1"
+        criterion: >-
+          npx tiphys validate --type plan --context <fleet> on the amended
+          delivery/plan/pulse-v02.yaml reports dispatchable and prints no
+          INVALID lines.
+      - id: "2"
+        criterion: >-
+          git diff <baseline> -- delivery/plan/pulse-v02.yaml shows additions
+          only: no existing phase id is removed or renumbered and no merged
+          phase's acceptance criteria are weakened or reworded.
+      - id: "3"
+        criterion: >-
+          Every acceptance criterion on every new phase names a measurement
+          taken in a browser, with a viewport and a threshold, or a command
+          with an exit code. A grep of the new phases shows no criterion
+          whose only measure is the existence of a CSS rule, a token, a class
+          name or a component file.
+      - id: "4"
+        criterion: >-
+          At least one criterion on the new work measures the interval
+          between the press and the first DOM change, at a phone viewport,
+          with the server action artificially delayed, and states the
+          threshold in milliseconds.
+      - id: "5"
+        criterion: >-
+          report-code-disagreement is non-empty and each entry names a file
+          and line at the baseline commit; every token the plan expects to
+          add to styles/tokens.css is named explicitly.
+      - id: "6"
+        criterion: >-
+          DR-0025 appears in open-questions with both options and their
+          consequences, is referenced by at least one phase, and no
+          acceptance criterion anywhere changes with its answer.
+      - id: "7"
+        criterion: >-
+          The plan adds no dependency: it names no state management library
+          and no component library, and any new package would be a stop-for
+          under CLAUDE.md scope discipline. git diff <baseline> -- package.json
+          is empty.
+    hazard-classes:
+      - id: H1
+        statement: >-
+          The plan satisfies the letter of the complaint with animation while
+          the dead interval between press and response remains, because
+          nothing measures the interval itself.
+        addressed-by: criterion 4
+      - id: H2
+        statement: >-
+          The plan turns server components into client components more widely
+          than the job needs, shipping the data layer to the browser to buy a
+          spinner.
+        addressed-by: criterion 3
+      - id: H3
+        statement: >-
+          The plan decides DR-0025 silently, so a finance screen shows an
+          unconfirmed value as though it were confirmed.
+        addressed-by: criterion 6
+      - id: H4
+        statement: >-
+          Motion is added with no reduced-motion path, so the product becomes
+          unusable for a reader who has asked the system for less of it.
+        addressed-by: criterion 3
+      - id: H5
+        statement: >-
+          The amendment rewrites merged phases or the intake documents.
+        addressed-by: criterion 2
+    migrations: none
+    conflicts-with: []
+    parallelizable: false
+    citations:
+      - R-005
+      - R-010a
+    fill-in:
+      filled: true
+      root-cause: >-
+        Measured at 89ed187: src/app/globals.css carries four :hover rules
+        and zero :active, zero :disabled and zero transition rules;
+        styles/tokens.css declares no duration, easing or motion token; no
+        prefers-reduced-motion block exists anywhere; a grep over src/ for
+        useFormStatus, useOptimistic, useTransition, isPending and aria-busy
+        returns nothing; and the application has one client component,
+        src/platform/ui/nav-link.tsx. Every form is a plain server-action
+        form, so no DOM change occurs between the press and the response.
+      files:
+        - delivery/plan/pulse-v02.yaml
+      fix-shape: >-
+        Amend the v0.2 plan with the phase or phases that add the motion and
+        state tokens, the pressed and disabled states, and a pending state on
+        every interactive surface, with criteria that measure the interval
+        between press and first DOM change rather than the existence of a
+        rule.
