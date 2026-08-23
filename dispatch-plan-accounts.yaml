@@ -1,0 +1,252 @@
+# Orchestrator dispatch declaration for the account-registration planning
+# task. Declares the single planning phase that adds that work to
+# delivery/plan/pulse-v02.yaml. Validates against schemas/plan.schema.json.
+kind: plan
+status: approved
+baseline-commit: 75ec85d
+binding-rule: >-
+  If it is not written here, it is not being made. Unanswered questions go to
+  the orchestrator.
+process-summary: >-
+  Orchestrated delivery under the full mode: verified plan, adversarial plan
+  review, one phase per branch, dual clean-room review before merge, merge
+  authority delegated under DR-0012's conditions.
+standing-context: |
+  The owner asked what they must do to reach a working state with their real
+  household: four current accounts, four savings accounts and two credit
+  cards, uploading one current account first, whose statement carries
+  transfers to the other nine. Pulse asks them to name those transfers as
+  merchants. They are not merchants; they are the household's own accounts.
+
+  The domain model already answers this. Flow classification runs against
+  user-declared sets in a fixed order: counterparty account in the declared
+  RESERVE set gives RESERVE, in the declared POT set gives INTERNAL,
+  otherwise the sign decides. Merchant resolution runs only over INCOME and
+  SPEND rows, so a declared own-account never reaches the naming screen. The
+  reason the owner sees them is that rule three fires: those IBANs are not
+  declared, because those accounts do not exist.
+
+  Measured at the baseline commit:
+
+  declareAccount is defined at src/modules/accounts/application/index.ts:27
+  and has exactly ONE caller in src: confirm-import.ts:96, which declares the
+  account THE FILE BELONGS TO. `find src/app -type d | grep -i account`
+  returns nothing: there is no accounts route, no accounts page, no way to
+  register an account you have not imported a statement for.
+
+  The pulse-domain skill states, in section 1: "Reserve accounts are
+  registered for their IBAN only. Their statements are not imported in v1. A
+  reserve movement is classified entirely from the pot side." That capability
+  was specified and never built. Since a reserve statement is never imported,
+  and importing is the only way to declare an account, a reserve account can
+  never be declared at all.
+
+  The consequence is the dangerous kind. Every transfer from the pot to
+  savings stays SPEND, the reserves block stays permanently empty, and the
+  spend total is inflated by every euro the household saves. The
+  reconciliation invariant income - spend - netToReserves === changeInPot
+  STILL HOLDS, because the money really did leave the pot, so the project's
+  highest-leverage test cannot catch this. It looks correct and it is wrong.
+
+  Two further gaps found while establishing the above. There is no way to
+  CHANGE an account's role after it is declared, so a current account
+  declared RESERVE by mistake at first import is wrong forever. And a card
+  account carries no IBAN by design (prisma/schema/accounts.prisma:16 to :20:
+  cards are recognised through their bound SourceProfile), so whatever
+  registration surface is built cannot register a card the same way it
+  registers a bank account.
+
+  The Account model already carries everything a registration needs: label,
+  bank, role, optional iban. Nothing in the schema blocks this.
+report-code-disagreement: []
+decisions: []
+open-questions: []
+parked: []
+phases:
+  - id: M0-P6
+    branch: claude/m0-p6-plan-accounts
+    intent: >-
+      Add to delivery/plan/pulse-v02.yaml the phase or phases that let the
+      household register every account it owns before or independently of
+      importing a statement for it, and correct an account's ring afterwards,
+      so transfers between the household's own accounts are never presented
+      as merchants and money moved to savings is never counted as spend.
+    grounding: >-
+      The owner's question and the measured facts in standing-context. The
+      pulse-domain skill is the authority and must be read in full: section 1
+      for the three rings and the sentence about reserve accounts being
+      registered for their IBAN only, section 2 for facts versus
+      declarations, section 3 for the classification order, and section 8 for
+      why the reconciliation invariant does not catch the savings case. The
+      import confirmation screen at
+      src/modules/import/ui/profile-confirmation.tsx is the only existing
+      declaration surface and is the thing being generalised.
+    severity: critical
+    verified-root-cause: >-
+      An account can only come into existence through confirm-import.ts:96,
+      which declares the account the imported file belongs to. There is no
+      other caller of declareAccount and no accounts route. A reserve account
+      is therefore undeclarable, because reserve statements are by design
+      never imported, so every pot-to-reserve movement falls through the
+      classification order to the sign rule and is counted as SPEND, and its
+      counterparty is offered to the owner as a merchant to name. The
+      reconciliation invariant holds throughout because the money did leave
+      the pot, so nothing in the product detects it.
+    steps:
+      - kind: verification-first
+        text: >-
+          Confirm at the baseline commit, with captured command output, every
+          claim in standing-context: the single caller of declareAccount, the
+          absence of any accounts route, the classification order and the
+          declared-set derivation, that merchant resolution runs only over
+          INCOME and SPEND, that reserve accounts' own rows are excluded from
+          the interpretation window, and that no code path changes an
+          account's role after creation. Then establish, and this decides the
+          shape of the work, whether an account registered by IBAN before any
+          import is correctly ADOPTED by a later import of that same account
+          rather than duplicated: read confirm-import.ts's findAccountByIban
+          path and say what happens today.
+      - text: >-
+          Plan the registration surface. It must let the household register
+          an account it has not imported, with a label, a bank, a ring and an
+          IBAN, and it must make the reserve case reachable, since that is
+          the one the product currently cannot express at all. Say where the
+          surface lives and how the owner reaches it, including from the
+          empty state, since a household with no imports is exactly when this
+          is most useful.
+      - text: >-
+          Plan the card case explicitly and do not paper over it. A card
+          account carries no IBAN and is recognised through its bound
+          SourceProfile, so it cannot be registered by IBAN like a bank
+          account. Say what registering a card means, or say that a card is
+          registered only by importing its statement and why that is
+          acceptable, with the consequence for the owner's two cards stated.
+      - text: >-
+          Plan the correction path. An account's ring is a declaration, and a
+          wrong one is wrong forever today. Say how it is changed, what
+          happens to interpretation when it changes, and that the change is a
+          declaration edit followed by a recompute rather than a row rewrite.
+          State what the owner sees when a ring change moves money between
+          the spend total and the reserves block.
+      - text: >-
+          Plan the healing. Interpretation runs over a window across all pot
+          accounts rather than over the rows just imported, so declaring an
+          account should reclassify past rows that reference it. Say what
+          triggers recompute on registration and on correction, and say what
+          happens to a MerchantRule the owner already wrote against a
+          counterparty that is now revealed to be their own account: it will
+          match nothing once the row is INTERNAL, and the plan must say
+          whether that dead rule is removed, kept, or surfaced.
+      - text: >-
+          Every acceptance criterion must measure the owner's scenario rather
+          than the mechanism. The scenario is: register the accounts, import
+          one current account whose statement carries transfers to the
+          others, and assert that NONE of those transfers appears on the
+          merchant review screen, that pot-to-pot transfers are excluded from
+          both totals, and that pot-to-reserve movements appear in the
+          reserves block with the correct sign. At least one criterion must
+          assert the savings case end to end, because that is the one the
+          reconciliation invariant cannot catch.
+      - text: >-
+          Validate the amended plan against the kernel schema and fix every
+          diagnostic.
+    files-to-touch:
+      - delivery/plan/pulse-v02.yaml
+    extras: []
+    acceptance:
+      - id: "1"
+        criterion: >-
+          npx tiphys validate --type plan --context <fleet> on the amended
+          delivery/plan/pulse-v02.yaml reports dispatchable and prints no
+          INVALID lines.
+      - id: "2"
+        criterion: >-
+          git diff <baseline> -- delivery/plan/pulse-v02.yaml shows additions
+          only: no existing phase id removed or renumbered, and no merged
+          phase's acceptance criteria weakened or reworded.
+      - id: "3"
+        criterion: >-
+          At least one acceptance criterion on the new work asserts the
+          owner's scenario end to end: accounts registered without importing
+          them, one current account imported whose rows reference the others,
+          and no transfer to a registered own-account present on the merchant
+          review screen.
+      - id: "4"
+        criterion: >-
+          At least one acceptance criterion asserts a pot-to-reserve movement
+          lands in the reserves block with the correct sign and is absent
+          from the spend total, and the plan states in that criterion's text
+          why the reconciliation invariant does not catch its absence.
+      - id: "5"
+        criterion: >-
+          The plan states what a later import of an already-registered
+          account does, and no criterion permits creating a second account
+          for an IBAN already registered.
+      - id: "6"
+        criterion: >-
+          The plan states the card case and the ring-correction path
+          explicitly, each with its consequence, and grep of the new phases
+          shows both referenced by at least one criterion.
+      - id: "7"
+        criterion: >-
+          report-code-disagreement is non-empty and each entry names a file
+          and line at the baseline commit.
+      - id: "8"
+        criterion: >-
+          No new phase declares a row update to imported facts: grep of the
+          new phases shows no step rewriting a transaction row, and the plan
+          states that a ring change is a declaration edit plus a recompute.
+    hazard-classes:
+      - id: H1
+        statement: >-
+          The plan builds a registration surface that only reaches accounts
+          the household could already declare by importing, leaving the
+          reserve case, which is the one that cannot be expressed at all,
+          still unreachable.
+        addressed-by: criterion 4
+      - id: H2
+        statement: >-
+          Registering an account before importing it produces a duplicate
+          account when the statement later arrives, splitting one account's
+          history in two.
+        addressed-by: criterion 5
+      - id: H3
+        statement: >-
+          A ring correction is implemented by rewriting stored rows rather
+          than by editing the declaration and recomputing.
+        addressed-by: criterion 8
+      - id: H4
+        statement: >-
+          The plan proves the scenario on a fixture built to pass, so the
+          criterion goes green while the owner's own ten-account household
+          still presents its transfers as merchants.
+        addressed-by: criterion 3
+      - id: H5
+        statement: >-
+          The card case is quietly left to the import path with no statement
+          of the consequence, so the owner discovers it the way they
+          discovered this one.
+        addressed-by: criterion 6
+    migrations: none
+    conflicts-with: []
+    parallelizable: false
+    citations:
+      - R-005
+      - R-010a
+    fill-in:
+      filled: true
+      root-cause: >-
+        declareAccount has one caller, confirm-import.ts:96, which declares
+        the account the imported file belongs to; there is no accounts route
+        and no other registration path. A reserve account is undeclarable
+        because reserve statements are never imported, so pot-to-reserve
+        movements fall to the sign rule and are counted as SPEND while the
+        reconciliation invariant continues to hold.
+      files:
+        - delivery/plan/pulse-v02.yaml
+      fix-shape: >-
+        Amend the plan with the phase or phases that add a registration
+        surface reaching the reserve case, a ring-correction path, adoption
+        of a registered account by a later import, and recompute-driven
+        healing, with criteria that measure the owner's ten-account scenario
+        rather than the mechanism.
