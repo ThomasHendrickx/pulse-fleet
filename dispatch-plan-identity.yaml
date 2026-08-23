@@ -1,0 +1,246 @@
+# Orchestrator dispatch declaration for the merchant-identity planning task.
+# Declares the single planning phase that adds that work to
+# delivery/plan/pulse-v02.yaml. Validates against schemas/plan.schema.json.
+kind: plan
+status: approved
+baseline-commit: a4f1a94
+binding-rule: >-
+  If it is not written here, it is not being made. Unanswered questions go to
+  the orchestrator.
+process-summary: >-
+  Orchestrated delivery under the full mode: verified plan, adversarial plan
+  review, one phase per branch, dual clean-room review before merge, merge
+  authority delegated under DR-0012's conditions.
+standing-context: |
+  The owner, using the deployed merchant review on their phone, saw two rows
+  from the same counterparty account listed as two separate unnamed
+  counterparties and asked, verbatim: "if I name a merchant .. what is the
+  thing new transactions will match on? if I look at the first two here ...
+  they are seperate according to pulse, but they are the same bank account.
+  if the full description is used at matching string .. I think pulse has
+  zero ability to deliver on its promise."
+
+  They are right, and the product cannot currently keep the promise its own
+  screen makes. Measured facts, all captured before this dispatch:
+
+  Naming writes a rule of kind EXACT whose pattern is
+  normaliseCounterparty(counterpartyText(row))
+  (src/modules/merchants/application/assign-merchant.ts:61 through :66), and
+  matching filters on kind === "EXACT" && pattern === normalised
+  (src/modules/merchants/domain/merchant-rule.ts:68). counterpartyText is
+  row.counterpartyName ?? row.description
+  (src/modules/merchants/domain/normalise-counterparty.ts:94 through :97).
+
+  Over the owner's real month in the deployed database: 39 transactions, 39
+  DISTINCT descriptions, and counterpartyName populated on ZERO rows, so the
+  key is always the full description and every row is its own counterparty.
+  A naming therefore matches exactly one transaction and never a second.
+  counterpartyIban is populated on 11 of the 39 and holds only 6 DISTINCT
+  values, and it is never used for merchant identity anywhere. The 28 rows
+  without an account number hold 28 distinct descriptions but only 6 distinct
+  first-twenty-character openings.
+
+  The same defect was found and fixed once already, for CARD descriptors, in
+  M3-P6. The comment recording it is at
+  src/modules/merchants/domain/normalise-counterparty.ts:99 through :106: 15
+  card rows produced 15 distinct keys, so naming wrote an EXACT rule that
+  could never match a second transaction. The card grammar was stripped of
+  per-transaction values. The TRANSFER grammar never was, and a transfer
+  descriptor carries a free-text communication that changes every time.
+
+  DR-0027 decides the product question: the same counterparty account is the
+  same counterparty, always, and the communication is dropped from identity.
+  The owner accepted the stated cost, that two purposes paid to one
+  counterparty land in one group and separating them is a tag question.
+
+  MerchantRuleKind declares EXACT, PREFIX and PATTERN
+  (prisma/schema/merchants.prisma:25 through :29) and only EXACT is ever
+  applied (merchant-rule.ts:68), so two of the three kinds are dead.
+
+  Facts are immutable (CLAUDE.md non-negotiable 5). The key derivation is
+  interpretation, so the change is to the derivation plus a recompute, never
+  a row rewrite.
+report-code-disagreement: []
+decisions:
+  - id: D-1
+    statement: >-
+      The same counterparty account is the same counterparty and the free
+      text communication is dropped from identity, per DR-0027, decided by
+      the owner on 2026-08-23.
+open-questions: []
+parked: []
+phases:
+  - id: M0-P5
+    branch: claude/m0-p5-plan-identity
+    intent: >-
+      Add to delivery/plan/pulse-v02.yaml the phase or phases that make a
+      merchant naming match every future transaction from the same
+      counterparty, so naming a counterparty once is enough.
+    grounding: >-
+      The owner's question, quoted verbatim in standing-context, and the
+      measured facts beside it. The M3-P6 card-grammar work at
+      src/modules/merchants/domain/normalise-counterparty.ts:99 onward is the
+      worked example of answering exactly this defect for one descriptor
+      family, including how it proved convergence by counting distinct keys
+      over real rows. The pulse-domain skill governs merchant resolution, the
+      facts versus interpretation split and recompute; read it in full before
+      planning any change to the key. The pulse-frontend skill governs what
+      the merchant review screen may show.
+    severity: critical
+    verified-root-cause: >-
+      The merchant key is the whole normalised counterparty text, and
+      counterpartyText falls back to the full description because
+      counterpartyName is never populated. A transfer description embeds a
+      free-text communication and a per-transaction reference, so the key
+      differs on every row: 39 rows produce 39 distinct keys on the owner's
+      real month. An EXACT rule written against such a key matches the one
+      row it was written from and nothing else, so the screen's own promise
+      that naming only moves a row into the right group is false. The
+      structured counterparty account the importer already stores, which
+      collapses 11 rows to 6, is not consulted.
+    steps:
+      - kind: verification-first
+        text: >-
+          Reproduce every number in standing-context before planning on it:
+          the distinct-description count, the counterpartyName population,
+          the counterpartyIban population and its distinct count, and the
+          distinct-opening count for rows without an account number. Do this
+          against COMMITTED SYNTHETIC FIXTURES that reproduce the shape, and
+          separately against the real documents in the container if they are
+          present, in memory only, reporting counts and never content. Record
+          every disagreement. Also establish which import paths populate
+          counterpartyIban and counterpartyName today and which do not, since
+          the fix depends on what the fact rows actually carry.
+      - text: >-
+          Plan the key derivation. Where a row carries a counterparty
+          account, that account is the identity, per DR-0027. Where it does
+          not, the identity comes from the descriptor grammar the way M3-P6
+          answered the card family; say which families exist, how each is
+          recognised, and what is stripped from each. State explicitly what
+          happens to a row that matches no family, because that case must be
+          honest rather than guessed.
+      - text: >-
+          Plan the migration of declarations. Merchant rules already written
+          against the old key exist in the owner's deployed database and
+          become unmatchable when the key changes. Say what happens to them:
+          re-derived, dropped with the counterparty returning to unnamed, or
+          left as dead rows. Facts are never rewritten; this is a question
+          about declarations only, and the answer must not silently discard
+          work the owner has already done.
+      - text: >-
+          Decide and state whether PREFIX and PATTERN rule kinds are
+          implemented, removed, or left declared and dead. Do not leave the
+          schema advertising two kinds the matcher ignores without saying so.
+      - text: >-
+          Plan what the merchant review screen shows once a group is many
+          rows rather than one: the group's identity, its row count, and
+          whether the individual communications remain visible. The owner
+          chose the account key knowing two purposes may land in one group,
+          so the screen must not make that look like a mistake.
+      - text: >-
+          Every acceptance criterion must measure CONVERGENCE rather than a
+          rule's existence. The measurement M3-P6 used is the model: count
+          distinct keys over a realistic multi-row fixture and assert the
+          count is the number of real counterparties, not the number of rows.
+          At least one criterion must assert that naming a counterparty once
+          causes a LATER, DIFFERENT transaction from the same counterparty to
+          resolve to that merchant with no second naming.
+      - text: >-
+          Validate the amended plan against the kernel schema and fix every
+          diagnostic.
+    files-to-touch:
+      - delivery/plan/pulse-v02.yaml
+    extras: []
+    acceptance:
+      - id: "1"
+        criterion: >-
+          npx tiphys validate --type plan --context <fleet> on the amended
+          delivery/plan/pulse-v02.yaml reports dispatchable and prints no
+          INVALID lines.
+      - id: "2"
+        criterion: >-
+          git diff <baseline> -- delivery/plan/pulse-v02.yaml shows additions
+          only: no existing phase id removed or renumbered, and no merged
+          phase's acceptance criteria weakened or reworded.
+      - id: "3"
+        criterion: >-
+          At least one acceptance criterion on the new work asserts that
+          naming a counterparty once resolves a LATER, DIFFERENT transaction
+          from the same counterparty to that merchant with no second naming,
+          and names the fixture that produces both transactions.
+      - id: "4"
+        criterion: >-
+          At least one acceptance criterion counts DISTINCT MERCHANT KEYS
+          over a multi-row fixture and asserts the count equals the number of
+          real counterparties in it rather than the number of rows, in the
+          shape M3-P6 used.
+      - id: "5"
+        criterion: >-
+          The plan states what happens to merchant rules already written
+          against the old key, and no criterion permits silently discarding a
+          naming the owner has already made.
+      - id: "6"
+        criterion: >-
+          The plan states the disposition of the PREFIX and PATTERN rule
+          kinds, and grep of the plan shows that disposition referenced by at
+          least one phase.
+      - id: "7"
+        criterion: >-
+          report-code-disagreement is non-empty and each entry names a file
+          and line at the baseline commit; every count reproduced in the
+          verification-first step is recorded with the command that produced
+          it, and no entry quotes descriptor content from a real document.
+      - id: "8"
+        criterion: >-
+          No new phase declares a row update to imported facts: grep of the
+          new phases shows no step that rewrites a transaction row, and the
+          plan states that the change is a derivation plus a recompute.
+    hazard-classes:
+      - id: H1
+        statement: >-
+          The plan makes keys collapse by stripping so much that two genuinely
+          different counterparties become one, silently merging money.
+        addressed-by: criterion 4
+      - id: H2
+        statement: >-
+          The plan proves convergence on a fixture built to converge, so the
+          criterion passes and the owner's month still does not.
+        addressed-by: criterion 3
+      - id: H3
+        statement: >-
+          Namings the owner has already made are discarded by the key change
+          without anyone deciding that they should be.
+        addressed-by: criterion 5
+      - id: H4
+        statement: >-
+          The plan fixes the key by rewriting stored rows, breaking the facts
+          are immutable rule.
+        addressed-by: criterion 8
+      - id: H5
+        statement: >-
+          Real descriptor content from the owner's statements reaches the plan
+          or a fixture while the shape is being reproduced.
+        addressed-by: criterion 7
+    migrations: none
+    conflicts-with: []
+    parallelizable: false
+    citations:
+      - R-005
+      - R-010a
+    fill-in:
+      filled: true
+      root-cause: >-
+        The merchant key is the whole normalised counterparty text and
+        counterpartyText falls back to the full description, which for a
+        transfer embeds a free-text communication. Measured on the owner's
+        real month: 39 rows, 39 distinct descriptions, counterpartyName
+        populated zero times, counterpartyIban populated 11 times over 6
+        distinct values and never used for identity.
+      files:
+        - delivery/plan/pulse-v02.yaml
+      fix-shape: >-
+        Amend the plan with the phase or phases that derive the merchant key
+        from the counterparty account where one exists and from a per-family
+        descriptor grammar where it does not, migrate existing declarations,
+        and prove convergence by counting distinct keys and by resolving a
+        later transaction with no second naming.
