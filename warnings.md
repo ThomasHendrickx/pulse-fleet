@@ -177,3 +177,14 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     the loss was schema that a migrate rebuilds. Disclosure is the
     behaviour to reward; the severity in a self-report is the thing to
     verify, in both directions.
+21. THE SIBLING LANE'S VERDICT IS READABLE ON THIS FILESYSTEM, AND
+    NOT READING IT IS THE WHOLE CONTRACT. Every lane's worktree lives
+    under /home/user and nothing prevents a criteria reviewer opening
+    the hazard lane's document, or the reverse. Decorrelation comes from
+    two lanes asking different starting questions INDEPENDENTLY, and a
+    reviewer who reads the sibling verdict destroys it while producing a
+    document that looks the same. Recorded because an M3-P14 criteria
+    lane met the sibling's file in a directory listing, declined to open
+    it, and said so unprompted. Dispatches must name this explicitly
+    rather than assume it: the sibling's verdict may be read only AFTER
+    your own is written and pushed, and never before.
