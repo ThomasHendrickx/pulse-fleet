@@ -108,3 +108,27 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     too much orchestrator noise is less orchestrator noise. Report
     outcomes and decisions the owner would feel; do not narrate the
     machine.
+15. A REVIEW'S CONCRETE-EDIT IS A PROPOSAL, NEVER A PATCH. A fix round
+    that pastes a reviewer's suggested wording into the plan verbatim is
+    adopting text that was written against one criterion in isolation,
+    by someone who was not reading its neighbours. Walk every proposed
+    edit against the criteria and hazards around it before taking it,
+    exactly as you would walk your own sentence, and say in the fix
+    round's report which edits you took as offered and which you
+    rewrote. The failure this records, found by the reviewer against its
+    own work: an M0-P6 round-three concrete-edit was adopted word for
+    word and contradicted the criterion eight lines above it, because
+    the edit's author had not read that one and the fix round did not
+    look. Review edits were entering the plan with less scrutiny than
+    the plan's own sentences received. A reviewer is not more right than
+    an implementer; the contract only makes them independent.
+16. THE AMBIENT DATABASE_URL IN A FLEET CONTAINER IS NOT PULSE. Measured
+    2026-08-24: it resolves to the owner's hemma-dev Supabase project,
+    with a working password, and no credential for the Pulse project
+    exists in the container. Any script that writes and does not pin its
+    own target will therefore write to the wrong database and succeed.
+    src/platform/db/guard.ts covers destructive commands through
+    guard-cli only; it does not cover an ordinary writing routine. Pin
+    the connection explicitly for anything that writes, and prefer a
+    local database you started yourself. Never run a migration or a
+    re-derivation against the ambient connection.

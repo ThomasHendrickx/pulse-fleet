@@ -1,0 +1,66 @@
+# DR-0030: whether Pulse reads a reserve account's own statement in v1.
+# Raised by the M0-P6 second adversarial plan review, which found decision
+# D-55 (refuse a reserve account's statement) presented as forced when it is
+# chosen. Sharpened by the owner, who named the caveat that decides it: a
+# savings figure derived only from transfers is a running sum from zero, so
+# it is wrong by the household's existing savings unless the account started
+# empty. Decided by the owner in session on 2026-08-24.
+kind: decision-record
+
+id: DR-0030
+project: pulse
+task: v02-account-registration
+question: >-
+  Does Pulse import a reserve account's own statement in v1, or does it take
+  reserve accounts by registration only and derive everything it says about
+  them from transfers seen on pot accounts?
+options:
+  - label: Accept the statement
+    consequence: >-
+      A reserve account's statement is imported like any other. THE REASON IS
+      THE OPENING BALANCE, not the rows: the balance contract already makes
+      opening plus rows equal closing a hard per-file gate, so a statement is
+      the one document that makes a savings total correct and self-checking
+      rather than a sum accumulated from an assumed zero. It also carries the
+      two things a transfer can never show, the interest a savings account
+      earns, which has no matching row on any pot account, and a movement
+      between two reserve accounts, which touches no pot account at all.
+      Rows on a reserve account are held and NOT COUNTED in the month's
+      totals, which is the scoping the plan already schedules; what this
+      decision adds is the screen state that says so, in the three languages,
+      and its tests. The reconciliation invariant is unchanged: a held row is
+      not an uninterpreted row, and the books still close. Chosen by the
+      owner.
+  - label: Refuse the statement, show no total
+    consequence: >-
+      Reserve accounts are registered by name only. Transfers into them are
+      recognised and land under the label the household typed. Rejected
+      because it answers "how much have we set aside" with silence
+      permanently, hides savings interest entirely, and cannot see a movement
+      between two reserve accounts at all. It was also the cheapest repair
+      for a defect (a reserve statement's rows keeping NULL flow and holding
+      the month open) rather than a product position, and the review found it
+      recorded as forced when the machinery to do better was already
+      scheduled one phase away.
+  - label: Refuse the statement, ask for a starting balance
+    consequence: >-
+      Same refusal, with the household typing each reserve account's current
+      balance at registration. Rejected: it produces the APPEARANCE of a
+      correct total without the mechanism that keeps one correct. The typed
+      number is checked by nothing and drifts silently the moment interest
+      lands or money moves between two reserve accounts, both of which stay
+      invisible. A figure that is wrong and looks right is worse than one
+      that is absent and says so.
+reversibility: reversible
+vetoable: true
+revert-cost: >-
+  Nothing is built yet. Reverting means restoring the import refusal and the
+  pot-only ring control, and deleting the held-not-counted screen state. The
+  ring scoping of the interpretation gap is wanted either way, because it is
+  what heals a household that has already imported a reserve statement.
+status: decided
+decided: >-
+  Accept the statement (owner, 2026-08-24). D-55 in the v0.2 plan is
+  superseded and must be rewritten to this position; the plan records the
+  decision as chosen, never as forced.
+date: "2026-08-24"
