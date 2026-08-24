@@ -132,3 +132,11 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     the connection explicitly for anything that writes, and prefer a
     local database you started yourself. Never run a migration or a
     re-derivation against the ambient connection.
+17. DUAL REVIEW MUST BE DECORRELATED IN THE DISPATCH, NOT ONLY IN THE
+    CONTRACT. Both M3-P12 round-two lanes were dispatched on the same
+    model and the kernel's `dual-review-decorrelation` check failed on
+    that dispatch fact, even though the two lanes reached genuinely
+    different findings and independently witnessed the same defect. The
+    contract split (criteria against hazard) is not decorrelation by
+    itself. Vary the model between the two lanes of a dual review when
+    dispatching, and record which lane ran on which.
