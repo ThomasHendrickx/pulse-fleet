@@ -202,15 +202,22 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     dev or production server in a fleet container without pinning
     `DATABASE_URL` yourself, and never conclude from "the gate is
     guarded" that everything is.
-23. THE IMPORTER AND THE LEDGER WRITE `householdId` WITHOUT VERIFYING
-    WHAT THEY REFERENCE. `transferLink.createMany` and
-    `transaction.createMany` set the column but do not check that the
-    ids they point at belong to the household, which is the position
+23. THREE WRITE PATHS SET `householdId` WITHOUT VERIFYING WHAT THEY
+    REFERENCE. CORRECTED 2026-08-24: the first version of this warning
+    repeated an implementer's disclosure that named two sites and got one
+    of them wrong. A round-five criteria lane checked the claim instead
+    of believing it and found a third. The sites are
+    `transferLink.createMany` in the ledger, `transaction.createMany` in
+    the importer, where it is `accountId` that is unverified and NOT
+    `importId` as first recorded, and `ledger-repository.ts:212` writing
+    `merchantId`. Each sets the column and does not check that the ids it
+    points at belong to the household, which is the position
     `applyRuleWrites` was in when a review witnessed a cross-household
-    row being created. Neither is reachable today, because both derive
-    their ids from household-scoped reads in the same call, so this is a
-    latent risk and not a live defect. It is one call site away from
-    being live, the schema's foreign keys carry no household component,
-    and closing that is a migration no phase currently owns. Do not
-    write a new call site into either path without verifying the ids
-    inside the same transaction.
+    row being created. None is reachable today, because each derives its
+    ids from household-scoped reads in the same call. They are one call
+    site away from being live, the schema's foreign keys carry no
+    household component, and closing that is a migration no phase owns.
+    Do not add a call site to any of the three without verifying the ids
+    inside the same transaction. The lesson under the correction: a
+    disclosure is a lead, not a finding, and the count in one is the
+    first thing to check.
