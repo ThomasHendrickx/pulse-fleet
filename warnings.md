@@ -260,3 +260,23 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     still leaves the orphan, which is how two finished lanes each left a
     server running this session. Both are cheap. Use the inode method to
     diagnose a block; use the cwd sweep to leave.
+27. A GUARD THAT MATCHES TEXT ABOUT THE THING IS NOT A GUARD ON THE
+    THING, AND THIS IS NOT ONLY A TEST DEFECT. Four test guards in
+    M3-P14 passed against the exact states they forbid because each
+    matched an idiom rather than the act. The same lane then wrote a
+    fifth instance in its own tooling within the hour: a readiness check
+    of `pgrep -f "workerProcessEntry"` matched the wrapper shell whose
+    command line CONTAINED that script's text, so it blocked on itself
+    and a run waited indefinitely while the ports it was waiting for
+    stood free. The correction is the same in both places: resolve the
+    thing, do not match words near it. `/proc/<pid>/exe` says what a
+    process IS; `/proc/<pid>/cwd` says whose it is; a command line says
+    only what somebody typed. Apply this to the tools you use to prove
+    your work, not only to the work.
+28. REDUNDANCY THAT SHARES A PRODUCER IS NOT REDUNDANCY. A lane reported
+    "two independent watches are alive, so the result cannot be missed".
+    Both watched the same log file, which the blocked job was never going
+    to write. Two observers of one producer is ONE point of failure
+    wearing two hats. Before calling a second check independent, name the
+    failure that would take out the first and ask whether it takes out
+    the second too.
