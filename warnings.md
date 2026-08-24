@@ -188,3 +188,29 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     it, and said so unprompted. Dispatches must name this explicitly
     rather than assume it: the sibling's verdict may be read only AFTER
     your own is written and pushed, and never before.
+22. THE APP ITSELF STILL OPENS WHATEVER `DATABASE_URL` NAMES, AND IN
+    THIS CONTAINER THAT IS NOT PULSE. As of M3-P12's fourth fix round
+    every TEST, GATE and SCRIPT refuses a database nobody named: the
+    destructive npm scripts through the local-only guard, the
+    re-derivation through the target interlock, the Playwright gate
+    through `src/platform/db/gate-target.ts`, and the fast gate opens no
+    connection at all. `npm run dev` and `npx next start` do NOT. They
+    resolve the ambient `DATABASE_URL` with no refusal, and the ambient
+    value in a fleet container is the owner's hemma-dev project. That is
+    deliberate, because the deployed app must open a deployed database
+    and a local-only refusal there would be wrong. So: never start the
+    dev or production server in a fleet container without pinning
+    `DATABASE_URL` yourself, and never conclude from "the gate is
+    guarded" that everything is.
+23. THE IMPORTER AND THE LEDGER WRITE `householdId` WITHOUT VERIFYING
+    WHAT THEY REFERENCE. `transferLink.createMany` and
+    `transaction.createMany` set the column but do not check that the
+    ids they point at belong to the household, which is the position
+    `applyRuleWrites` was in when a review witnessed a cross-household
+    row being created. Neither is reachable today, because both derive
+    their ids from household-scoped reads in the same call, so this is a
+    latent risk and not a live defect. It is one call site away from
+    being live, the schema's foreign keys carry no household component,
+    and closing that is a migration no phase currently owns. Do not
+    write a new call site into either path without verifying the ids
+    inside the same transaction.
