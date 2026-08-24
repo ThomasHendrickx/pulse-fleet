@@ -248,3 +248,15 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     afterwards and stop what is left. Two finished lanes each left a
     server running this session and between them stalled a third lane's
     exclusive window.
+26. THE PORT CHECK AND THE ORPHAN SWEEP ANSWER DIFFERENT QUESTIONS AND
+    ARE NOT SUBSTITUTES. `/proc/net/tcp` plus the file-descriptor inode
+    tells you WHO HOLDS THIS PORT RIGHT NOW, which is what a lane needs
+    when it is blocked and must know whether the holder is a real run or
+    a leftover. Walking `/proc/*/cwd` tells you WHICH PROCESSES BELONG TO
+    MY WORKTREE, which is what a lane needs when it finishes and must
+    leave nothing behind. The second catches what the first cannot: a
+    process of yours that has already released its port and is still
+    resident. A lane that checks only ports reports itself clean and
+    still leaves the orphan, which is how two finished lanes each left a
+    server running this session. Both are cheap. Use the inode method to
+    diagnose a block; use the cwd sweep to leave.
