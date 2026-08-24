@@ -273,6 +273,13 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     process IS; `/proc/<pid>/cwd` says whose it is; a command line says
     only what somebody typed. Apply this to the tools you use to prove
     your work, not only to the work.
+    AND STRIP COMMENTS BEFORE YOU MATCH. A comment describing a defect
+    looks exactly like the defect to any grep. The sixth instance of this
+    error in one session was a check that the OLD shape had been removed
+    from a script, reporting it still present because it matched the
+    comment explaining why the old shape was wrong. Every guard of this
+    kind needs a comment-stripping pass, and so does the ad-hoc command
+    you use to verify the guard.
 28. REDUNDANCY THAT SHARES A PRODUCER IS NOT REDUNDANCY. A lane reported
     "two independent watches are alive, so the result cannot be missed".
     Both watched the same log file, which the blocked job was never going
