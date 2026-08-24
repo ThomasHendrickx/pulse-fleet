@@ -287,3 +287,15 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     wearing two hats. Before calling a second check independent, name the
     failure that would take out the first and ask whether it takes out
     the second too.
+29. FOUR FAMILIES OF ONE ERROR, ALL SHIPPED GREEN IN ONE DAY: matching
+    text ABOUT a process instead of the process; matching an IDIOM
+    instead of the act; asserting a LICENCE instead of the merchant; and
+    validating a SCHEME instead of the destination. Every one of them
+    passed. Every one was found the same way, by pointing the instrument
+    at the thing it forbids. The general form is that a check validated
+    the SHAPE of a thing rather than its IDENTITY, and shape is what is
+    easy to match. Before trusting any guard, gate, filter or assertion,
+    ask what it would say when handed exactly what it exists to refuse,
+    and then hand it that thing rather than reasoning about it. If you
+    cannot construct the refused case, the guard is unverified, whatever
+    colour it reports.
