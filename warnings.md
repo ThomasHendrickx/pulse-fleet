@@ -221,3 +221,30 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     inside the same transaction. The lesson under the correction: a
     disclosure is a lead, not a finding, and the count in one is the
     first thing to check.
+24. NEVER VERIFY A CLAIM WITH AN INSTRUMENT THAT SHARES THE CLAIM'S
+    BLIND SPOT. A round-five lane swept for its own leftover processes
+    with `pgrep -f "<worktree-path>"`, found none, and reported the
+    environment clean. `next-server` rewrites its own argv to
+    `next-server (vX.Y.Z)`, which carries neither the worktree path nor
+    the command that started it, so four of its own processes were
+    invisible to that pattern. It then saw a port held, and attributed
+    it to another lane BECAUSE ITS OWN SCAN HAD COME BACK EMPTY: the
+    scan's blind spot supplied the evidence for the wrong conclusion. It
+    had killed by cmdline and verified by cmdline, so the check could not
+    catch what the kill had missed. The concrete rule: identify a process
+    by `/proc/<pid>/cwd`, which a process cannot rewrite, never by its
+    argv. The general rule is the one worth carrying: when a check and
+    the thing it checks can fail together, the check proves nothing, and
+    a second instrument of a DIFFERENT kind is the only confirmation
+    worth having. The same lane made the same mistake once more that
+    session, substituting an argument for a construction when rating a
+    finding, and named both as one lesson rather than two.
+25. PLAYWRIGHT ORPHANS ITS WEB SERVERS WHEN YOU SIGTERM THE RUN.
+    `reuseExistingServer` is false here, so the config starts its own
+    servers on 3000 and 3100 and tears them down on a CLEAN exit only. A
+    run killed with SIGTERM during cleanup never reaps them, and they
+    hold both ports until someone notices. If you interrupt a slow-gate
+    run for any reason, sweep `/proc/<pid>/cwd` for your own worktree
+    afterwards and stop what is left. Two finished lanes each left a
+    server running this session and between them stalled a third lane's
+    exclusive window.
