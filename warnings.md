@@ -156,3 +156,24 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     what the code did. `reuseExistingServer` is deliberately false, so a
     lane that moves ports to avoid a clash introduces its own confound
     and must say so.
+19. THE LOCAL SUPABASE STACK IS SHARED BY EVERY WORKTREE AND ITS
+    PROJECT NAME IS NOT YOURS. `npx supabase stop` acts on the project
+    the CURRENT DIRECTORY's config names, and a lane that reverts a
+    config file before running cleanup stops whichever project the
+    reverted file names, which will be a sibling's. Measured
+    2026-08-24: a review lane's cleanup stopped a stack that had been up
+    46 hours, with `--no-backup`, and the shared database came back with
+    zero tables in `public`. It is recoverable, a dev stack is rebuilt by
+    `prisma migrate deploy` and a seed, and the only real loss is the
+    time of every lane that had migrated its own database on it. Two
+    rules follow. Never run `supabase stop` with `--no-backup` unless you
+    started that exact stack yourself in that exact directory and no
+    other lane is running. And run cleanup BEFORE reverting any config
+    the cleanup command reads, never after.
+20. A REVIEW LANE THAT BREAKS SOMETHING MUST SAY SO IN ITS REPORT, AND
+    THE ORCHESTRATOR MUST CHECK THE DAMAGE RATHER THAN THE CLAIM. The
+    lane in warning 19 disclosed the incident prominently and called the
+    damage likely unrecoverable. It was not: the stack was back up and
+    the loss was schema that a migrate rebuilds. Disclosure is the
+    behaviour to reward; the severity in a self-report is the thing to
+    verify, in both directions.
