@@ -92,3 +92,19 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     under `[edge_runtime]` in supabase/config.toml, start the stack,
     then revert. That file is TRACKED, so revert it before committing or
     the change lands in the repository.
+14. NEVER PUT A MECHANICS QUESTION TO THE OWNER (DR-0029). A question
+    reaches the owner only when the two answers produce different
+    software, different data, or a different risk they would live with.
+    How the work is carried out is never theirs: agent count and
+    parallelism, worktrees, watchdogs, ports, brief wording, review
+    sequencing, retries, whether a stalled agent is resumed or replaced.
+    If you cannot name the consequence the owner would feel, there is no
+    question, only a decision you have not made yet. The failure this
+    records: after the owner interrupted four concurrent agents because
+    orchestrator machinery filled every turn and their messages could
+    not land, the orchestrator promised to run one agent at a time and
+    ASK before running more. That turned a volume problem into an asking
+    problem and cost the owner more attention, not less. The answer to
+    too much orchestrator noise is less orchestrator noise. Report
+    outcomes and decisions the owner would feel; do not narrate the
+    machine.
