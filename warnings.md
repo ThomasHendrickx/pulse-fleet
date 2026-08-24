@@ -140,3 +140,19 @@ Appended to every composed brief. Facts, measured in this fleet's container.
     contract split (criteria against hazard) is not decorrelation by
     itself. Vary the model between the two lanes of a dual review when
     dispatching, and record which lane ran on which.
+18. THE E2E GATE IS NOT RELIABLY GREEN UNDER FLEET CONTENTION, AND THAT
+    IS AN ORCHESTRATOR FAILURE, NOT AN IMPLEMENTER ONE. Measured
+    2026-08-24 by a round-three criteria lane: machine load 5.8 to 9.44
+    on a four-core box, node, next and playwright processes from at
+    least three other worktrees concurrent, `test/e2e/golden-journey`
+    producing two DIFFERENT failure symptoms on two consecutive isolated
+    runs and passing cleanly in 26 seconds on a third, and a full-suite
+    run cascading into ERR_CONNECTION_REFUSED after another worktree
+    retook ports 3000 and 3100 mid-run. That is resource starvation, not
+    a logic defect. Two consequences. First, never dispatch two lanes
+    that will both run `npm run test:e2e` at the same time; stagger them
+    and say in the dispatch which one owns the ports. Second, when a
+    lane reports a red e2e gate, ask what the load was before asking
+    what the code did. `reuseExistingServer` is deliberately false, so a
+    lane that moves ports to avoid a clash introduces its own confound
+    and must say so.
