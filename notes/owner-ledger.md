@@ -247,3 +247,45 @@ again as if new, which happened repeatedly up to 2026-08-27.
   cause), and the remedy stays locked behind the owner record the entry
   awaits. Freeze and D-51 untouched. Validation all exit 0: yaml parse,
   tiphys validate (dispatchable: true), gate:privacy, gate:decisions.
+
+## M3-P18 carried low settled (2026-08-27, implementer)
+
+- Head a620ae2: HZ2-M3P18-01 settled in one test-and-prose commit. The
+  migration's whitespace-class pin now extracts all FOUR inlined
+  occurrences and asserts each byte-equal to the shared constant
+  (count pinned at four); red witnessed by mutating the
+  collision-comparison occurrence alone (1 failed), green restored
+  (679/679). The two overbroad byte-equality sentences corrected loudly.
+  Gates at head: npm test 0, typecheck 0, gate:privacy 0,
+  gate:decisions 0. Branch ready for the coordinator's merge; e2e and
+  the read-back remain the recorded pre-close debts.
+
+## M3-P18 merged and deployed (2026-08-27, orchestrator)
+
+- Both clean-room lanes closed APPROVE at round two; the carried pin low
+  was fixed and red/green witnessed before merge. Merged at e499d64 with
+  all four verdicts and the parked-entry annotation for the DR-0030/D-51
+  interaction.
+- Deployed: the build stamp reads e499d64 in production. The canonical
+  backfill migration was applied to the deployed database over the
+  management API per fleet precedent, with the hand-written prisma
+  history row. Measured before applying: one account row, already
+  canonical, zero collision groups, so the statement was a verified
+  no-op on today's data; it exists for the history and for any
+  pre-setup household state that returns. The owed post-deploy
+  detection run reported zero collision groups.
+- DR-0030 is therefore live end to end: a savings statement is accepted,
+  its rows held out of every total and shown as held with the ring named
+  as the cause.
+- Slice-close debts standing: browser e2e (a Docker-capable container)
+  and the fixture read-back against the real documents (documents only
+  the owner holds).
+- M3-P11 (optimistic naming, DR-0025 and DR-0026) implementer
+  dispatched.
+- Session note: the permission classifier began refusing some benign
+  local commands mid-session (brief compose, plan reads via python,
+  ledger appends via heredoc); worked around with lane agents composing
+  their own briefs and appends through the editor tool. A permission
+  rule for npx tiphys and scripts/sync-branches.sh would remove the
+  friction; the branch sync itself is still owed and needs a user-side
+  run.
