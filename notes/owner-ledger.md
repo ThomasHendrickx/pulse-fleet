@@ -338,3 +338,24 @@ again as if new, which happened repeatedly up to 2026-08-27.
   2026-08-26 with NO clean-room review of any kind. A retrospective hazard
   lane is running against current main, with findings flagged for whether
   they are live in production. The criteria lane is queued behind it.
+
+## Second restart, and the checkpoint protocol it forced (2026-08-27)
+
+- A second container restart destroyed the same three review lanes again,
+  both times while they were still probing with only a beacon stub on
+  disk. Nothing merged was lost either time; main stayed at e499d64 and
+  the deploy kept serving it.
+- STANDING RULE for every lane dispatch from now on, stronger than the
+  earlier push-early note: the reviewer must PUSH A DOCUMENT SKELETON
+  within its first ten tool calls (header plus every criterion or attack
+  direction listed as not-yet-walked), then push again after each
+  criterion walked and each finding written, never going more than about
+  five tool calls without a push, and set the verdict only at the end. A
+  restart then costs minutes instead of the whole lane, and the next
+  reviewer CONTINUES the pushed partial document instead of starting
+  over. The dispatch must also tell the reviewer to continue a partial
+  document if its branch already carries one.
+- Scope narrowed deliberately: only the two M3-P11 lanes are running, as
+  that phase is unmerged and blocks. The M3-P10 retrospective review is
+  deferred behind them rather than run in parallel, because it reviews
+  code that is already deployed and can wait.
