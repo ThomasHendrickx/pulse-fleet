@@ -289,3 +289,32 @@ again as if new, which happened repeatedly up to 2026-08-27.
   rule for npx tiphys and scripts/sync-branches.sh would remove the
   friction; the branch sync itself is still owed and needs a user-side
   run.
+
+## M3-P11 built, gates green, e2e authored and owed (2026-08-27, implementer)
+
+- claude/m3-p11-optimistic-naming at 8fb0f58 (branched from main e499d64).
+  DR-0025 and DR-0026 are now on the naming screen: the row shows the
+  typed name the moment it is submitted, marked unconfirmed (visual mark
+  plus a polite live region wired to the submit control's description),
+  no money figure or row position is predicted, a failure puts the label
+  back and raises a hand-built dismiss-only toast (assertive, catalogue
+  copy in all three languages, no timer), and a saved name that differs
+  from the typed one is told on the row in a polite notice instead of
+  being swapped in silently.
+- Gates at head, all exit 0: typecheck, lint, npm test (679/679),
+  gate:privacy, gate:decisions, gate:tokens, npm run build (env pinned to
+  invented localhost). Four new catalogue keys, key sets equal across
+  en/nl/fr.
+- Plan staleness found and recorded, not improvised around: the plan's
+  grounding predates merged M3-P12, so "a failed naming is silent today"
+  was no longer true (the status banner was live) and criterion 11.7(a)'s
+  "at most five client files" predates M3-P14's setup form (six directive
+  files now, named set otherwise exact). Both are recorded as deviations
+  in delivery/work-history/m3-p11.yaml; the refusal wording M3-P12 gave
+  the stale/account/unidentifiable kinds is kept in the toast.
+- Standing debt, same as every recent phase: this container has no
+  Docker, so npm run test:e2e is AUTHORED but not run. The new
+  optimistic-naming spec (prediction, two forced failures, trimmed-name
+  difference, three languages, both prod projects) plus the amended
+  stale-subject journey await a Docker-capable container; the owed
+  command is npm run test:e2e.
