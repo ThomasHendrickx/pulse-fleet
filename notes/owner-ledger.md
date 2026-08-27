@@ -318,3 +318,23 @@ again as if new, which happened repeatedly up to 2026-08-27.
   difference, three languages, both prod projects) plus the amended
   stale-subject journey await a Docker-capable container; the owed
   command is npm run test:e2e.
+
+## Container restart, 2026-08-27 (orchestrator)
+
+- The session container restarted and killed three running review lanes
+  (both M3-P11 lanes and the retrospective M3-P10 hazard lane). Nothing
+  merged was lost: main, the fleet repo, every worktree and their
+  node_modules survived, and the deploy still serves e499d64.
+- What WAS lost: the probing those three lanes had done in memory. Both
+  M3-P11 lanes had produced only beacon stubs on disk, no findings. They
+  were re-dispatched into the same prepared worktrees.
+- Standing correction for every future lane dispatch: instruct the agent
+  to COMMIT AND PUSH its verdict document as soon as it has a verdict and
+  its first findings, then amend and re-push as it finishes. A lane that
+  holds its whole document in memory until the end loses everything to a
+  restart or a rate limit, and this has now happened twice in one session
+  (a session rate limit at 16:40 UTC, then the restart).
+- M3-P10 gap being closed: the busy state phase merged and deployed on
+  2026-08-26 with NO clean-room review of any kind. A retrospective hazard
+  lane is running against current main, with findings flagged for whether
+  they are live in production. The criteria lane is queued behind it.
