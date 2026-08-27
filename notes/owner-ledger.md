@@ -75,3 +75,81 @@ again as if new, which happened repeatedly up to 2026-08-27.
   a permission grant.
 - M3-P10 busy state merged 2026-08-26 with no clean-room review lane on
   record; noted as a gap of the runaway evening, not yet remediated.
+
+## M0-P6 harvest iteration delivered (2026-08-27, plan-writer)
+
+- Pushed to claude/m0-p6-plan-accounts at e8021ff (merge of main at
+  dc18484 plus one harvest commit). Not merged to main.
+- ONE new phase, M3-P18 (claude/m3-p18-savings-held-and-migration), six
+  criteria 18.1 through 18.6: savings statement accepted with the built
+  refusal removed (DR-0030), held rows rendered under the typed label and
+  summed nowhere, both null-flow reads ring-scoped, canonical backfill of
+  stored account numbers (named as closing the live P14-001 exposure: a
+  pre-setup stored non-canonical number never matches the built gate's
+  canonical lookup, so that statement is refused with no remedy), duplicate
+  check comparing canonical forms with a colliding pair named by row id and
+  never guessed at, and the gate criterion. M3-P14 kept as built (nine
+  criteria); build-stamp M3-P17 untouched.
+- Decisions: D-55 rewritten per DR-0030 with the superseded wording quoted;
+  D-51 kept exactly as main has it; D-56 relived; D-59 and D-60 repinned to
+  M3-P18; D-62 added (split-at-the-population record). NOTE: the interlock
+  descope lane may also claim D-62; main carried none at merge time, so the
+  second lane to land must renumber.
+- The lane's 17.1 (ring change after rows have landed, with the ledger
+  clear) is PARKED, not planned: DR-0031 fixes the ring once an account has
+  imported rows of its own, and no owner record supersedes that. The
+  lane's inference that DR-0030 falsified the freeze's premise is recorded
+  in the parked entry, attributed, awaiting an owner record. Findings
+  P17-001/002/003/005 ride the parked entry; P14-001, P14-006, P17-004,
+  P17-006, P17-007, P17-009 ride M3-P18.
+- Validation on the pushed head, all exit 0: python3 yaml.safe_load, npx
+  tiphys validate --type plan --context delivery (dispatchable: true), npm
+  run gate:privacy, npm run gate:decisions.
+
+## M3-P17 clean-room review, HAZARD lane, round one (2026-08-27, reviewer)
+
+- Verdict FIX-ROUND-NEEDED, pushed to claude/m3-p17-rev-haz at 67d736d
+  (delivery/review/m3-p17-hazard.yaml). Head reviewed: 12c20f3.
+- CRITICAL HZ-M3P17-01: the head cannot produce a production build. The
+  route exports the UNSTAMPED constant beside its handler and next build
+  refuses it as an invalid Route export field (witnessed, exit 1, Next
+  15.5.23 from the tree's own lockfile). Consequences: npm run test:e2e
+  cannot pass anywhere (the chromium-prod web server starts with npm run
+  build), criterion 17.3 is unsatisfiable, and merging would break every
+  Vercel deploy, so the stamp M3-P16 waits on could never land (the old
+  build keeps serving; the route 404s there). typecheck only stays green
+  in a never-built tree; with .next/types present it exits 2 on the same
+  defect. Fix validated in a reverted experiment: marker moved to a
+  sibling non-route module under src/app/api/health/version/, build exit
+  0, unit tests 6/6.
+- LOW HZ-M3P17-02: no cache-control header on the route's 200 (witnessed
+  against next start); fix is an explicit no-store plus one assertion.
+- LOW HZ-M3P17-03: gate:decisions red at head is inherited from the
+  branch point f19984b (identical six lanes there); main's dc18484
+  already prunes them; fix round should rebase onto current main. Already
+  known to the owner via the implementer's work history open question; do
+  not re-deliver as news.
+- Route substance otherwise held under attack: exactly two fields, two
+  pinned env names read at request time only, methods and error paths
+  disclose nothing further, unstamped marker cannot collide with a sha,
+  no database path touched, no scope growth.
+
+## M0-P6 fix round one delivered (2026-08-27, plan-writer)
+
+- claude/m0-p6-plan-accounts now at 30a9594: merge of main f2fccf5 (the
+  descope lane's D-62 kept, this lane's split decision renumbered D-63,
+  its two references updated) plus one fix commit answering all eight
+  findings of delivery/review/m3-p18-plan-review.yaml. Key changes: the
+  database-behaviour assertions of 18.3/18.4/18.5 re-levelled to
+  slow-gate direct-client specs (merchant-rule-write precedent); the
+  collision pair now left DETECTABLE via a committed read-only script
+  (scripts/detect-account-collisions.ts) whose output the slow gate
+  asserts, replacing migration output nothing captures, with the
+  post-deploy run recorded as owed in the work history; 18.1's sweep
+  gains SETUP_LINKED and the shipped refusal e2e (rewritten, not
+  deleted); the seed harness gains the two savings-ring accounts;
+  D-51 annotated (superseded D-55 wording quoted, freeze untouched);
+  two DR-0030 dates and the migrations path corrected. Validation all
+  exit 0: yaml parse, tiphys validate (dispatchable: true),
+  gate:privacy, gate:decisions. One review round used; one remains
+  under rule 10.
