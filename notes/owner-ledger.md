@@ -488,3 +488,49 @@ again as if new, which happened repeatedly up to 2026-08-27.
   at no head, because no container in this project has Docker. It is now
   the only thing standing between this phase and a witnessed behavioural
   result, and the specs it will run are no longer known to be broken.
+
+## M3-P10 fix round pushed, seven findings settled (2026-08-27, implementer)
+
+- claude/m3-p10-busy-state-fix at 0c75e22, branched off main. No pull
+  request, no merge. The busy state was merged and deployed with no review
+  of any kind on record; a retrospective hazard review found seven defects,
+  five of them live on the deployed build.
+- The one the owner has been looking at: pressing a button made it render
+  as DISABLED, not as busy, because the two appearances collided in the
+  stylesheet and the disabled one outranked the other. The little mark that
+  says "working" measured 1.09 to 1 against the button it sat on, which is
+  invisible on a phone in daylight. It now measures 6.1 to 1, on every
+  control that can become busy, for the whole of its loop rather than at
+  one instant of it. This is the third pass at the same complaint, so it
+  is worth saying plainly: what shipped in August looked, on a press,
+  exactly like a control that was dead.
+- Two more the owner would meet. A press threw away the keyboard's place
+  on every control in the product, worst on merchant naming, where naming
+  five counterparties meant tabbing from the top of the page five times; a
+  pressed control now keeps its focus and still refuses a second press. And
+  a press widened the button it was on and reflowed the row underneath it;
+  the space is now reserved.
+- One was a promise with no failure branch: the accounts setup submit tied
+  its busy state to a call whose rejection was unwritten, so a dropped
+  connection mid-submit left the screen's recovery to the framework. Both
+  branches are now written and the reader is told, in all three languages,
+  that the submission did not land.
+- One was a test that could not fail: the only assertion that the busy
+  state ever ENDS ran after a redirect, on a page holding no button that
+  had been pressed. It now runs per control, after that control's own
+  response.
+- Two are records rather than repairs, and one of them is an owner-visible
+  debt rather than a tidy-up: the privacy probe over the real statements
+  has still never been run, in any container, and the criterion's own
+  escape clause does not cover the reason. What is owed is one run in a
+  container that can read those files. The gate that does run sees no
+  merchant name and no place name, which is how two real ones reached the
+  public repository before.
+- Gates at head, all exit 0 under Node 22 with a pinned invented localhost
+  database: typecheck, lint, npm test (702 passed), gate:tokens,
+  gate:privacy, gate:decisions, npm run build. Unchanged debt, and it now
+  covers this round's new assertions too: npm run test:e2e has still
+  executed at no head, because no container in this project has Docker.
+  Every measurement claimed above was taken in a real chromium driving the
+  product's own stylesheet, which needs no server; none of it was taken
+  against the running product.
