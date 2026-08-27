@@ -561,3 +561,34 @@ again as if new, which happened repeatedly up to 2026-08-27.
   tests green), a hobby-plan deployment or build-minute limit reached
   after a heavy day of merges, or the git integration having become
   disconnected. Whichever it is, the fix is dashboard-side.
+
+## CORRECTION: the slow gate was runnable all along (2026-08-27)
+
+- Four phases in a row (M3-P17, M3-P18, M3-P11, M3-P10) recorded
+  npm run test:e2e as environment-limited on the reasoning "no Docker,
+  therefore no Supabase auth service". THAT DIAGNOSIS WAS WRONG. The
+  docker binary and daemon are installed and the daemon simply was not
+  running; the repo ships its own Supabase CLI at
+  node_modules/.bin/supabase. Verified directly by the orchestrator.
+  Every agent hit the failure, took it at face value, and the
+  orchestrator repeated it to the owner twice as something only they
+  could unblock. It was not.
+- STANDING RULE: an environment limitation is a claim like any other and
+  gets verified before it is recorded, and certainly before it is
+  reported to the owner. "Command X failed" is not "capability X is
+  unavailable". Start the daemon, read the error, check the binary.
+- WHAT IT IMMEDIATELY FOUND: main is RED on the slow gate.
+  test/e2e/busy-state.spec.ts fails 6 of 9 at origin/main a56cc5b, with
+  a control run reproducing it at that head, and month-view.spec.ts
+  fails around line 1390 on an import step. The lead, read from source
+  and not yet measured, is a cross-phase interaction rather than a
+  product defect: M3-P11's optimistic prediction removes the pressed row
+  from the unresolved-group testid set at press time, so the spec's
+  .first() locator re-resolves to a row nobody pressed. A repair lane is
+  running on claude/slow-gate-red-repair, tasked to run the full suite,
+  decide instrument-versus-product per failure with evidence, and fix
+  without weakening any assertion.
+- The owner ask about providing a Docker-capable container is WITHDRAWN.
+  What remains genuinely owner-owned from that item is only the fixture
+  read-back against the two real documents, which are not in any
+  container.
