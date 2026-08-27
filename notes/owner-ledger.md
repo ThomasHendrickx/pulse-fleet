@@ -534,3 +534,30 @@ again as if new, which happened repeatedly up to 2026-08-27.
   Every measurement claimed above was taken in a real chromium driving the
   product's own stylesheet, which needs no server; none of it was taken
   against the running product.
+
+## DEPLOYS ARE STALLED, found by the build stamp (2026-08-27 20:05 UTC)
+
+- Production still serves e499d64. Main is at a56cc5b, two merges ahead:
+  1ed44c3 (M3-P11, pushed 18:58 UTC) and a56cc5b (the M3-P10 busy-state
+  fix, pushed 19:44 UTC). Sixty-seven minutes after the first of them,
+  neither has deployed. That is not a slow build.
+- The deployed app is otherwise healthy: /api/health/db returns 200 and
+  the old build keeps serving, so nothing is broken for the owner, but
+  nothing merged since e499d64 has reached them either. In particular
+  the invisible busy mark and the disabled-looking busy control are
+  STILL LIVE, and the whole M3-P11 feedback chain is not live.
+- This is exactly the failure the M3-P17 build stamp was built to make
+  visible, and it worked: without it the fleet would have gone on
+  assuming main equals production, which is the assumption that hid the
+  stale M3-P12 head for a day.
+- The fleet cannot diagnose it: the Vercel MCP connector is still scoped
+  away from the pulse project (list_deployments returns 403 forbidden
+  for prj_aktwMwqBivpCofVJmaUp7DCy91Qi), the same limitation recorded on
+  2026-08-18. Reading the build log needs the owner's dashboard.
+- OWNER ACTION, added to the standing asks: open the Vercel dashboard for
+  the pulse project and look at the deployments since e499d64. Most
+  likely causes, in order: a build failing in Vercel's environment though
+  it passes locally (npm run build exits 0 here on the merged tree, 702
+  tests green), a hobby-plan deployment or build-minute limit reached
+  after a heavy day of merges, or the git integration having become
+  disconnected. Whichever it is, the fix is dashboard-side.
