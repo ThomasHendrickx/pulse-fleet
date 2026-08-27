@@ -359,3 +359,67 @@ again as if new, which happened repeatedly up to 2026-08-27.
   that phase is unmerged and blocks. The M3-P10 retrospective review is
   deferred behind them rather than run in parallel, because it reviews
   code that is already deployed and can wait.
+
+## M3-P11 criteria lane, round one, finished (2026-08-27)
+
+- Verdict FIX-ROUND-NEEDED on the criteria contract, at implementer head
+  8fb0f58; the review document is delivery/review/m3-p11-criteria.yaml on
+  claude/m3-p11-rev-crit, head f8ec02b.
+- THE CHECKPOINT PROTOCOL WORKED, AND IT ALSO SHOWED ITS ONE HOLE. The
+  partial document survived the restart as intended, but the last commit
+  of the first session, whose subject said it walked four mechanical
+  criteria, had in fact DELETED their four blocks while writing a fifth
+  one's evidence (five insertions, twenty-two deletions). So the lane
+  arrived with one criterion walked, not five. The second session
+  restored the blocks, walked all nine remaining criteria itself, and
+  recorded the loss in the document header. Worth adding to the standing
+  rule: a push-per-criterion is only safe if the pushed diff is read
+  back, since a truncating edit pushes just as cleanly as a good one.
+- The implementation itself is sound. No correctness defect was found:
+  the money is structurally outside the prediction's reach, the client
+  boundary is closed at depth (import closure walked, not asserted), the
+  literal and token gates are green, and every fast gate passes when re-run.
+- Five findings, one medium that a fix round can close (an accessibility
+  gap: the unconfirmed description hangs on a submit control that is
+  disabled for exactly the window the description exists, so the
+  focus-return telling the criterion promises cannot happen), one medium
+  that no fix round in this environment can close (the browser gate has
+  never executed at any head), and three low.
+- STANDING ENVIRONMENT DEBT, now recorded for the third phase in a row:
+  npm run test:e2e cannot run in these containers (no Docker, so no local
+  Supabase auth service). Criteria 11.2 through 11.5, the entire
+  behavioural half of this phase, are unwitnessed rather than refuted.
+  This is the same debt CR-M3P18-02 carries. Until one lane gets a
+  container with Docker, every UI phase will close with its browser
+  criteria unmeasured.
+- The sibling hazard lane's verdict was NOT read by this lane at any
+  point, before or after the walks.
+
+## M3-P11 fix round one closed (2026-08-27, implementer)
+
+- claude/m3-p11-optimistic-naming at ec4779d. Both clean-room lanes
+  returned FIX-ROUND-NEEDED on 8fb0f58 with eleven findings between them;
+  each was re-derived in the worktree before anything changed.
+- The one real defect: the record that carried the server's answer back
+  to the reader was a single shared slot matched on the label alone, so
+  naming a second row erased the first row's pending state and a merchant
+  with rows on both sides could raise its notice on a row nobody named.
+  It is now one entry per row, per direction, and six fast-gate rules pin
+  it; three of those were red against the shipped behaviour first.
+- Two reader-facing improvements the owner would feel. The failure
+  sentence no longer says the name was not saved: the declaration is
+  written before the answer travels, so that could be false; all three
+  languages now say the answer was not confirmed and tell the reader to
+  reload to see what is stored. And notices no longer stack in one
+  rectangle where the second hid the first: one shows at a time, the next
+  appears when the reader dismisses it, and nothing vanishes undismissed.
+- Also: the unconfirmed marking is now reachable by keyboard (the naming
+  field carries the description, since the submit is disabled exactly
+  while the description exists), the masking walk can see a label rendered
+  from a prop, and two spec assertions were widened to the criteria they
+  serve.
+- Gates at head, all exit 0: typecheck, lint, npm test (690 passed),
+  gate:privacy, gate:decisions, gate:tokens, build with a pinned invented
+  localhost database. Unchanged debt: npm run test:e2e has still executed
+  at no head, because this container has no Docker; both lanes reproduced
+  that limit and neither asked the round to close it.
