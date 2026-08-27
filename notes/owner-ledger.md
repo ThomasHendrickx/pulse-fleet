@@ -592,3 +592,80 @@ again as if new, which happened repeatedly up to 2026-08-27.
   What remains genuinely owner-owned from that item is only the fixture
   read-back against the two real documents, which are not in any
   container.
+
+## THE SLOW GATE RAN, AND IT WAS RED. IT IS NOW GREEN (2026-08-27, slow-gate repair)
+
+- claude/slow-gate-red-repair at f3a30f0, cut from main and merged up to
+  4f38dbb. No pull request, no merge.
+- THE CORRECTION FIRST, because four phases in a row recorded the opposite:
+  npm run test:e2e IS runnable in these containers. The docker daemon
+  starts, the repository ships its own Supabase CLI, the local stack serves
+  the gate and the schema goes on with prisma migrate deploy. Every one of
+  those phases recorded the gate as environment-limited on a wrong
+  diagnosis, so the gate was never green or red on evidence: it was simply
+  never run. It has now run four times end to end.
+- WHAT IT FOUND AT MAIN: 16 failures over 119 tests, eight distinct defects,
+  each red in every project that runs it. Seven were defects in the TESTS
+  and one was a defect in the PRODUCT.
+- The product one is the owner's phone at its narrowest and largest text.
+  At 360 pixels with the device text size at 200 percent, three of the four
+  navigation labels wrapped onto three lines and "Accounts", the link added
+  in M3-P14, wrapped onto four. Not because the word is long, "Merchants"
+  is longer: each label had 42 pixels of room and "Acc" needed 43.5, so the
+  fourth link lost a character on every line and paid a line for it, and the
+  navigation row stood 138 pixels tall. Two pixels of padding back on each
+  side fixes it: "Accounts" now takes three lines like the others and the
+  row is 105 pixels tall.
+- The seven test defects share one shape: a spec measuring something the
+  product had legitimately changed under it. The loudest was the busy state,
+  which four phases could not witness. The spec held the merchant naming
+  button through the row's "unresolved" marking, and M3-P11 takes a row out
+  of that set the instant the reader's typed name appears, so every reading
+  after the press described a row nobody had pressed. THE BUSY STATE ITSELF
+  WAS NEVER BROKEN. The instrument was, by an interaction between two
+  phases that were each right on their own.
+- Two more were races in the tests, one was a test driving a declaration
+  step the product removed once it has learned a format, one asserted that
+  an import must not re-read a row the interpretation window deliberately
+  reaches, one required two rows to point at a notice when only one notice
+  is ever on screen, and one measured a merge across income and spend, where
+  two rows is the correct answer.
+- FINAL NUMBERS AT HEAD, every one captured rather than claimed: typecheck,
+  lint, npm test (704 tests), gate:privacy, gate:decisions, gate:tokens and
+  npm run build all exit 0, and npm run test:e2e exits 0 with 118 passed,
+  0 failed and 1 skipped by its own touch-project condition, in 30 minutes.
+- ONE OPERATIONAL FINDING worth carrying: the docker daemon died on its own
+  in the middle of the first run and took the local database with it, which
+  turned every remaining test red at its sign-up step. That is what an
+  environment failure looks like, and it is not what the eight defects above
+  looked like. A watchdog now restarts the daemon and its containers.
+- WHAT THIS DOES NOT SETTLE: the e2e debt recorded against M3-P10, M3-P11,
+  M3-P12 and M3-P18 is now paid at THIS head, on this branch. It is not paid
+  on main until this branch is merged.
+
+## The slow gate is green on main, verified by the orchestrator (2026-08-27)
+
+- main 975d0ce. The orchestrator ran the full suite itself on the merged
+  tree, with DATABASE_URL, DIRECT_URL and E2E_DATABASE_URL each parsed
+  and asserted to resolve to 127.0.0.1 before anything ran: EXIT 0,
+  118 passed, 1 skipped, thirty minutes. The e2e debt carried by
+  M3-P10, M3-P11, M3-P12 and M3-P18 is paid.
+- Of the sixteen failures on the red main, seven distinct defects were
+  INSTRUMENTS measuring the wrong thing and one was a real PRODUCT
+  defect: the fourth navigation link narrowed every link to a quarter of
+  the row, and at a two hundred percent device text size the Accounts
+  label lost a character per line and wrapped to four lines at 360
+  pixels. Fixed with a padding token; width, height and tap targets
+  unchanged. That is the owner's own complaint area, found only because
+  the suite was finally run.
+- One notice-attribution assertion came out STRONGER than the one it
+  replaced: the old form passed even when both rows pointed at the same
+  notice.
+- OPERATIONAL, worth knowing before someone panics: the Docker daemon
+  can die mid-run and take the local database with it, turning every
+  test after that point red at its sign-up step. That looks exactly like
+  a mass product failure and is not one. Re-run with the daemon
+  restarted before reading a wall of red as a regression.
+- Still not reaching the owner: production remains stalled at e499d64,
+  now five merges behind. Everything above is merged and green and none
+  of it is live.
