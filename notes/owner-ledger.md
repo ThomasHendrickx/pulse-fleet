@@ -153,3 +153,33 @@ again as if new, which happened repeatedly up to 2026-08-27.
   exit 0: yaml parse, tiphys validate (dispatchable: true),
   gate:privacy, gate:decisions. One review round used; one remains
   under rule 10.
+
+## Orchestrator progress (2026-08-27, later the same session)
+
+- M3-P17 build stamp: fix round verified by the orchestrator's own gate
+  run (typecheck, lint, 757 tests, privacy, decisions, tokens, build all
+  exit 0), merged to main at d03c86c with both round-one verdicts landed.
+  The DEPLOYED STAMP IS LIVE and answers with exactly main's head sha in
+  production: the first time the fleet can observe what is deployed.
+- Interlock withdrawal (D-62): plan iteration DISPATCHABLE after its two
+  review rounds; implementation removed the register, scanner and proxy
+  machinery (3241 lines out, 699 in), the five 12.23 measurements exist
+  as red-witnessed fast-gate tests, all gates and the production build
+  green in the orchestrator's own run; merged to main at dee3d32. The
+  round-13 residual highs are resolved by withdrawal.
+- M3-P18 (savings held plus canonical backfill): plan DISPATCHABLE after
+  two rounds, merged at bec02cc with both reviews; implementer dispatched
+  with the two carried round-two findings. Slow-gate specs and e2e remain
+  environment-limited in these containers (no Docker); the slice cannot
+  close until a capable container runs them.
+- M3-P16 (deployed re-derivation run) is CREDENTIAL-BLOCKED, not
+  process-blocked: the stamp is live, the guard and both hatches are
+  merged, the Supabase management API reaches the pulse project for the
+  residue proof, but the run needs the deployed postgres connection
+  string whose password only the owner (Vercel env) holds. To unblock:
+  either the owner provides the two connection strings to a session for
+  the one documented run, or runs the two-command invocation themselves
+  (guard-cli then the routine, dry-run first, both hatches inline).
+- M3-P9 carried instrument fixes (testIgnore-honoring membership check,
+  behavioral listener witness) dispatched on
+  claude/m3-p9-carried-instrument-fixes.
