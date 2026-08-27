@@ -669,3 +669,23 @@ again as if new, which happened repeatedly up to 2026-08-27.
 - Still not reaching the owner: production remains stalled at e499d64,
   now five merges behind. Everything above is merged and green and none
   of it is live.
+
+## CORRECTION: the deploys were not stalled, they were queued (2026-08-27 23:37)
+
+- At 20:05 the orchestrator reported production stuck at e499d64 for
+  sixty-seven minutes and asked the owner to check the Vercel dashboard
+  for a failing build or a plan limit. That ask is WITHDRAWN: production
+  is now at 4f38dbb on its own, with no owner action. Vercel rolled
+  forward to the newest commit rather than building each merge in turn,
+  which is ordinary behaviour on a day with many merges, and the queue
+  simply ran long.
+- What is live as a result: the busy-state contrast and focus fixes
+  (the invisible mark and the disabled-looking busy control are FIXED in
+  production) and the whole M3-P11 feedback chain. Only 975d0ce, the
+  slow-gate repair, is still building.
+- The lesson is the same one the e2e diagnosis taught, in the other
+  direction: an observation ("production is sixty-seven minutes behind")
+  is not a diagnosis ("the pipeline is broken"). The build stamp gave a
+  true observation and the orchestrator attached a cause to it that the
+  evidence did not support, then took it to the owner. Report the
+  measurement, propose the cause as a hypothesis, and say which it is.
