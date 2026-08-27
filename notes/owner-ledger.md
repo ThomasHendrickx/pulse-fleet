@@ -423,3 +423,68 @@ again as if new, which happened repeatedly up to 2026-08-27.
   localhost database. Unchanged debt: npm run test:e2e has still executed
   at no head, because this container has no Docker; both lanes reproduced
   that limit and neither asked the round to close it.
+
+## M3-P11 criteria lane, round two, CLOSED (2026-08-27)
+
+- Verdict APPROVE at fix head ec4779d. Document
+  delivery/review/m3-p11-criteria-round2.yaml on claude/m3-p11-rev-crit,
+  head 750b811. Under the round cap this closes the lane; two new
+  findings and one carried one ride the implementer's brief as work.
+- The fix round did well. Four of the five round-one findings are closed,
+  three of them more strongly than the finding asked for. The
+  accessibility gap was closed without reversing M3-P10's decided
+  disabled behaviour, and the two weak spec measurements were replaced
+  with better ones rather than argued away.
+- THE BEST THING IN THE DELTA, worth the owner knowing: the claim rules
+  criterion 11.5 turns on were moved into a pure module and pinned by
+  eleven fast-gate tests that DO run in these containers. Part of this
+  phase's behaviour is now witnessed here instead of waiting on a browser
+  nobody has been able to start.
+- TWO NEW FINDINGS, both about the record and the tests, neither about
+  product behaviour. One: the client leaf now imports two sibling modules,
+  which criterion 11.7(e) forbids literally, and the work history's
+  boundary claim still carries a captured output that no longer
+  reproduces. Two, and this is the one that matters: two assertions in the
+  newly added notice journey are FALSE against this head's own DOM, so
+  npm run test:e2e cannot exit 0 at ec4779d for reasons that have nothing
+  to do with Docker.
+- A METHOD NOTE FOR FUTURE LANES: Playwright needs no server to evaluate a
+  locator. Driving chromium with page.setContent over a copy of the head's
+  markup settled both halves of that second finding as measurements. Every
+  previous lane treated "no Docker" as "no browser evidence at all"; that
+  was too pessimistic and it cost real coverage.
+- SLICE-CLOSE CONDITION, unchanged in substance and now with a
+  precondition: fix those two assertions FIRST, then run npm run test:e2e
+  in a container with Docker and capture the output. The e2e debt is now
+  in its third consecutive phase.
+
+## M3-P11 settle round closed, ready to merge (2026-08-27, implementer)
+
+- claude/m3-p11-optimistic-naming at fef2d8a. Both lanes closed under the
+  round cap (criteria APPROVE, hazard carrying its findings as work); the
+  coordinator directed five carried items settled before merge and all
+  five are settled.
+- Two were real defects the owner would have met. The claim record that
+  tells you a saved name differs from the one you typed was keyed by the
+  row alone, and a counterparty with a spend row and a refund renders two
+  rows sharing that key, so naming one could silently swallow the other's
+  message; the identity is now the row and its direction. And the notice
+  at the bottom of the screen could be about a row you had not just acted
+  on: it is now always the one your last action produced, with the others
+  waiting their turn and none removed unless you dismiss it.
+- Two were test defects that would have made the owed browser run report a
+  red that is not a product fault: two assertions in the new notice
+  journey read the wrong element and filtered on the wrong thing. Both
+  were fixed and measured in a real browser without a server.
+- One was a record correction: the leaf now imports three small pure
+  modules from its own folder, which a criterion forbids on its letter.
+  The boundary itself does not leak (those modules import nothing), the
+  claim in the work history was corrected, and the deviation is declared.
+  Whether the criterion should be relaxed is an owner question, not a
+  repair.
+- Gates at head, all exit 0: typecheck, lint, npm test (696 passed),
+  gate:privacy, gate:decisions, gate:tokens, build with a pinned invented
+  localhost database. Unchanged debt: npm run test:e2e has still executed
+  at no head, because no container in this project has Docker. It is now
+  the only thing standing between this phase and a witnessed behavioural
+  result, and the specs it will run are no longer known to be broken.
