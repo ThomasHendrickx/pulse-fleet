@@ -183,3 +183,67 @@ again as if new, which happened repeatedly up to 2026-08-27.
 - M3-P9 carried instrument fixes (testIgnore-honoring membership check,
   behavioral listener witness) dispatched on
   claude/m3-p9-carried-instrument-fixes.
+
+## M3-P18 implemented (2026-08-27, implementer)
+
+- claude/m3-p18-savings-held-and-migration delivered: DR-0030 built (the
+  savings-ring refusal removed root and branch, held blocks under the typed
+  label with the note in three catalogues, no sums per D-60), both null-flow
+  reads ring-scoped (CR-502 held), the canonical backfill migration
+  (accounts.iban only, collision pair excluded first, idempotent), the
+  read-only detection script wired to the surviving guard contract
+  (R2-M3P18-01/-02 honoured), and the typed duplicate check over canonical
+  forms. Fast gate 678/678, privacy, decisions, tokens, build all exit 0.
+- NEW SINCE DISPATCH, do not re-derive: the implementer container carries a
+  bare Postgres 16 (no Docker, no Supabase auth). A throwaway cluster
+  witnessed prisma migrate deploy (7/7 incl. the backfill), all SQL-level
+  arms of 18.3/18.4/18.5 (42 assertions, captured verbatim in
+  delivery/work-history/m3-p18-notes.md), and one FORMAL Playwright pass of
+  test/e2e/held-and-gap-rows.spec.ts (1 passed). Still owed elsewhere:
+  npm run test:e2e in full (browser journeys need the Supabase auth
+  service); the slice does not close until it passes.
+- Open questions handed on (work history claims C4-C6): the browser-arm
+  specs, the post-deploy detection-script run against the deployed target,
+  and one criterion-18.5 wording read (error points at the offending typed
+  row by index; naming the duplicated account's label would need two files
+  outside the declaration). Two declared-scope deviations recorded
+  (overview application index.ts binding; two comment-only R-087
+  corrections).
+
+## M3-P18 fix round one delivered (2026-08-27, implementer)
+
+- Head d3cb64f (code fix 20b6b07). HZ-M3P18-01 closed red-then-green
+  against a real Postgres 16: one shared SQL whitespace class
+  (ACCOUNT_NUMBER_SQL_WHITESPACE_CLASS, the POSIX class plus the full
+  ECMAScript set as visible ARE escapes) now strips exactly what the
+  platform canonical form strips, wired into the migration (edited in
+  place: unmerged branch, throwaway clusters only), the detection
+  grouping and the reserves join; a fast test sweeps every Unicode code
+  point and pins the equivalence; the harness seeds NBSP/narrow-NBSP/BOM
+  renderings including a second collision pair the corrected grouping
+  now emits.
+- HZ-M3P18-02: freeze untouched (owner decision); guard's stale
+  justification corrected loudly; held note now names the savings-ring
+  registration as the cause in three catalogues. THE PARKED RING-CHANGE
+  ENTRY NEEDS AN ANNOTATION the implementer may not write (R-007): one
+  confirmed upload onto a mis-ringed account now closes the only ring
+  correction; recorded as claim M3P18-C9 for the orchestrator to land.
+- HZ-03: INGESTED documented and pinned as terminal-and-settled for a
+  savings import. HZ-04: detection script's post-deploy run documented
+  as not optional, silent-hold trade named. CR-01: read-back recorded as
+  environment-limited, owed before slice close (each new line invented
+  in-session; real documents not in these containers); do not treat as
+  done. CR-03/04/05 fixed. CR-02 stands: npm run test:e2e still executed
+  nowhere; browser arms need the Docker-based Supabase stack.
+
+## M0-P6 parked-entry annotation (2026-08-27, plan-writer)
+
+- claude/m0-p6-plan-accounts at 123b713 (fast-forwarded to main 49d1ff4,
+  which had absorbed the lane, plus one commit). The parked ring-change
+  entry now carries the measured consequence from clean-room hazard
+  finding HZ-M3P18-02: one wrong ring answer at setup plus one confirmed
+  upload permanently mis-rings the account, its rows render held and
+  counted nowhere, the state is visible (the held note names the ring
+  cause), and the remedy stays locked behind the owner record the entry
+  awaits. Freeze and D-51 untouched. Validation all exit 0: yaml parse,
+  tiphys validate (dispatchable: true), gate:privacy, gate:decisions.
