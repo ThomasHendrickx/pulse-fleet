@@ -689,3 +689,66 @@ again as if new, which happened repeatedly up to 2026-08-27.
   true observation and the orchestrator attached a cause to it that the
   evidence did not support, then took it to the owner. Report the
   measurement, propose the cause as a hypothesis, and say which it is.
+
+## M3-P13 is built: the review screen says what it grouped on and how far a naming reaches (2026-08-28)
+
+- claude/m3-p13-identity-on-review at f5c1db1, cut from main 975d0ce. No pull
+  request, no merge, no plan edit.
+- WHAT THE OWNER GETS. Every unresolved group on /merchants now says, in their
+  own language, whether it was joined because the transactions share a
+  counterparty account or because they share a description; the naming form
+  says how many transactions of the month the name will reach BEFORE it is
+  submitted, using the group's own row count rather than a second one; a group
+  whose rows carry no counterparty name is labelled by its account in masked
+  form instead of by one transaction's descriptor; and every group opens onto
+  the individual transactions behind it, each with its own date, description
+  and amount. That is DR-0027's accepted cost made visible: two purposes paid
+  to one counterparty read as two lines the owner can point at rather than as
+  one opaque total.
+- A THING THAT WAS ALREADY WRONG AND IS NOW FIXED, found while building this:
+  /merchants printed a counterparty ACCOUNT NUMBER IN FULL. An account-basis
+  group was labelled by the normalised descriptor, and a transfer descriptor
+  carries the account exactly as the statement prints it. Measured on the
+  shipped normaliser before any change was made. The account is now masked
+  wherever it is rendered, on the label and on the new transaction lines, and
+  the masker refuses to touch anything that is not an account number of a
+  country and a length the pinned registry knows.
+- ONE CRITERION COULD NOT BE MET AS WRITTEN and was escalated rather than
+  improvised around, which is the one thing here that may want the owner's
+  eye. Criterion 13.2 asks the full page source of /merchants to carry no
+  unmasked account AND asks the naming form's hidden field on the same page to
+  carry the unmasked namespaced identity key. For an account-basis group that
+  key IS the namespace followed by that account, so the two halves contradict
+  each other. Measured, there are three places in the source that must hold
+  it: the hidden field the criterion itself requires, the row identity
+  attribute the optimistic-naming work addresses rows by, and the framework's
+  own serialised payload, because the naming row is a client component. None
+  of the three is rendered, which is what the hazard is about. What was built
+  asserts the strongest true form: the account appears in no rendered markup,
+  in either the compact or the spaced shape, once those three machine channels
+  are removed.
+- TWO EXISTING TESTS MEASURED SOMETHING THE PRODUCT LEGITIMATELY CHANGED, the
+  same shape as the seven the slow-gate repair found yesterday. The accounts
+  spec asserted that the own-account groups are labelled with fragments of the
+  uppercased descriptor; decision D-41 labels such a group by the counterparty
+  name the statement carries, so the assertion now compares the label exactly,
+  in the case the statement printed it, which is stronger than the substring
+  form it replaces. And the pressed-and-disabled sweep found the new
+  disclosure as a twenty-second interactive control, which is that gate doing
+  its job: the enumeration was amended, never the sweep narrowed, and the new
+  control needed no new appearance rule.
+- GATES AT HEAD, every one captured rather than claimed: typecheck, lint,
+  npm test (719 passed), gate:privacy, gate:decisions, gate:tokens and
+  npm run build all exit 0, and NPM RUN TEST:E2E EXITS 0 with 121 passed, 0
+  failed and 1 skipped by its own touch-project condition, in 31.6 minutes,
+  against the local Supabase stack with DATABASE_URL, DIRECT_URL and
+  E2E_DATABASE_URL each parsed and asserted to resolve to 127.0.0.1 first.
+  The slow gate is confirmed runnable here for the second day running.
+- TWO OPERATIONAL THINGS WORTH KNOWING BEFORE SOMEONE LOSES AN HOUR TO THEM.
+  Do not run npm run build in a worktree before the slow gate: it writes the
+  production output into .next, which is the directory next dev uses, and the
+  first run here failed three specs that this phase cannot reach, one of them
+  the wrong-password sign-in line. And do not edit anything under src/ or
+  test/e2e/ while the gate is running, because the dev server compiles from
+  disk and the result is then a measurement of no single tree. Both are
+  recorded in the phase work history as warnings.
