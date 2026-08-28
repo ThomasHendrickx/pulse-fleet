@@ -709,10 +709,20 @@ again as if new, which happened repeatedly up to 2026-08-27.
   /merchants printed a counterparty ACCOUNT NUMBER IN FULL. An account-basis
   group was labelled by the normalised descriptor, and a transfer descriptor
   carries the account exactly as the statement prints it. Measured on the
-  shipped normaliser before any change was made. The account is now masked
-  wherever it is rendered, on the label and on the new transaction lines, and
-  the masker refuses to touch anything that is not an account number of a
-  country and a length the pinned registry knows.
+  shipped normaliser before any change was made. CORRECTED THE SAME DAY BY
+  BOTH CLEAN-ROOM LANES, and the superseded sentence is quoted rather than
+  deleted: this entry used to say "The account is now masked wherever it is
+  rendered, on the label and on the new transaction lines". THAT WAS FALSE IN
+  TWO WAYS, both high and both live in production. The mask fails OPEN on
+  every separator except the ASCII space, so an account grouped with a
+  no-break space, a narrow no-break space, a tab, a newline, a full stop or a
+  hyphen is copied through in full, and a no-break space is one byte in one of
+  the two accepted import encodings and has already been witnessed inside
+  stored account renderings in this project. And only /merchants was fixed:
+  the import confirmation screen, which is the screen the owner photographed,
+  prints the counterparty account in a column of its own through the card mask
+  only, and the month view renders descriptor text the same way. A fix round
+  covering every rendering surface and the separator set is in flight.
 - ONE CRITERION COULD NOT BE MET AS WRITTEN and was escalated rather than
   improvised around, which is the one thing here that may want the owner's
   eye. Criterion 13.2 asks the full page source of /merchants to carry no
