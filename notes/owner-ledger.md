@@ -762,3 +762,42 @@ again as if new, which happened repeatedly up to 2026-08-27.
   test/e2e/ while the gate is running, because the dev server compiles from
   disk and the result is then a measurement of no single tree. Both are
   recorded in the phase work history as warnings.
+
+## CORRECTION: "masked wherever it is rendered" was not true when I wrote it (2026-08-28, M3-P13 fix round)
+
+- WHAT THE ENTRY ABOVE SAYS, quoted so the record shows what was wrong
+  rather than silently reading better: "The account is now masked wherever
+  it is rendered, on the label and on the new transaction lines, and the
+  masker refuses to touch anything that is not an account number of a
+  country and length the pinned registry knows."
+- BOTH HALVES OF THAT SENTENCE WERE FALSE, and two independent clean-room
+  lanes found it. It is corrected here rather than edited above, because an
+  entry that quietly improves is an entry the owner cannot audit.
+- FALSE HALF ONE, "wherever it is rendered": it was masked on ONE screen.
+  The import preview printed the counterparty account whole in a column of
+  its own on every import, which is the same screen the owner photographed
+  when a card number leaked there, and the month view printed it on its
+  group labels, its reserves rows, its held rows and its gap rows. Five
+  further surfaces. All six are now masked, and the enumeration is no longer
+  a sentence in a comment: a test walks every rendering surface in the tree
+  and fails if one masks against the card number and not against the
+  account.
+- FALSE HALF TWO, "refuses to touch anything that is not an account number":
+  the masker also refused to touch things that ARE account numbers. It
+  accepted a plain ASCII space between the digit groups and nothing else, so
+  an account written with a no-break space, a narrow no-break space, a tab, a
+  newline, a full stop or a hyphen was printed in full. The no-break space is
+  not hypothetical here: it is a single byte in Windows-1252, one of the two
+  encodings Pulse accepts, and this project has already seen that character
+  inside stored account numbers. An account of a country the pinned table
+  does not carry was printed in full too. Both now fail closed.
+- A THIRD THING THE REVIEW CAUGHT, and it is the one that matters most for
+  trust: the sentence under the naming box said the name applies to so many
+  transactions "of this month". The screen has no month. It reads every
+  transaction the household has ever imported, and naming applies to all of
+  them, past and future. So the sentence UNDERSTATED what the owner was
+  about to do, on the one screen built to say how far a naming reaches. It
+  now says "already imported", and a test refuses any period word coming back
+  into it in any of the three languages.
+- Nothing here reached production: this is all on the phase branch, which
+  has not been merged.
