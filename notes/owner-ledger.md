@@ -801,3 +801,37 @@ again as if new, which happened repeatedly up to 2026-08-27.
   into it in any of the three languages.
 - Nothing here reached production: this is all on the phase branch, which
   has not been merged.
+
+## M3-P13 merged (2026-08-27, orchestrator), main 004c57c
+
+- Both clean-room lanes closed APPROVE. Verified by the orchestrator's own
+  runs on the merged tree: fast gates green at 752 tests, and the full slow
+  gate exit 0 at 122 passed.
+- WHAT THIS PHASE ACTUALLY FIXED, and it is more than the phase was for.
+  /merchants had been printing a counterparty ACCOUNT NUMBER IN FULL,
+  because an account-basis group was labelled by its normalised descriptor
+  and a transfer descriptor carries the account as the bank prints it. The
+  review then found the same leak on five further surfaces, including the
+  import confirmation screen, which is the screen the owner photographed,
+  where the account had a column of its own. Six surfaces are now masked and
+  the enumeration is derived by a test rather than written by hand, so the
+  next surface cannot go unseen the way these did.
+- THREE MORE, all live before this phase: the new mask itself failed OPEN on
+  every separator but the ASCII space, so an account written with a no-break
+  space (one byte in an accepted import encoding, and already witnessed in
+  this project's own stored data) was copied through in full; the screen told
+  the reader a naming reaches transactions "of this month" while the read had
+  no month at all, true with one statement imported and false with two; and
+  the page was serialising every raw transaction description into a script
+  element, because a React element passed as a client-component prop ships
+  its own props.
+- A TRAP WORTH REMEMBERING: next dev serialises every server component's
+  props into the page, so a page-source absence assertion run against the
+  dev server proves nothing. The literal clause is now asserted against the
+  production build.
+- The settle round corrected TWO of the orchestrator's own prescriptions,
+  each with a measurement taken before choosing: a flat one-separator bound
+  would have broken a doubled-space account, and the proposed fallback
+  remedy would still have swallowed words, because a space separates both an
+  account's groups and two sentences' words. Recorded because an implementer
+  measuring an instruction and refusing it is the behaviour this fleet wants.
