@@ -927,3 +927,85 @@ again as if new, which happened repeatedly up to 2026-08-27.
   the argument that DR-0030 falsified its premise is the lane's inference,
   already parked. change-account-ring.ts is byte-identical to main and the
   test asserting the owner's behaviour passes unchanged.
+
+## The import format question could be answered twice, and it crashed (2026-08-29)
+
+- LIVE DEFECT ON MAIN, fixed on claude/import-format-duplicate-name at
+  d4a1232. Answering the import format question with a name
+  the household had already given a DIFFERENT format hit the per-household
+  unique index on source profile names. Nothing caught the constraint
+  violation, so it reached the framework and the reader got the
+  "Application error" page in the middle of the import flow. Naming a
+  format twice is an ordinary thing to do.
+- RED WITNESS, twice. At the adapter, calling the real createProfile twice
+  with one name against a local Postgres threw
+  PrismaClientKnownRequestError P2002, "Unique constraint failed on the
+  fields: (householdId, name)". In the browser, the extended import
+  journey against the unfixed code rendered "Application error: a
+  server-side exception has occurred", with the same P2002 in the server
+  log, traced from the server action through the confirm use case into the
+  repository.
+- GREEN WITNESS: the same journey now shows one sentence on the
+  confirmation screen saying the name is already used, nothing is written,
+  and answering again with a free name imports the file.
+- SHAPE OF THE FIX, in the shape this codebase already uses: the write
+  reports an already-used name as a VALUE rather than throwing, the
+  confirm use case returns a typed rejection, and the reason is routed
+  through the import screens' status-key whitelist like every other
+  refusal. The check runs BEFORE account resolution, so a refused confirm
+  leaves no declared account behind for a card whose format never landed;
+  the repository's own refusal stands behind it for the window two racing
+  confirms leave open. Copy in all three catalogues under
+  importProfileNameTaken.
+- THE FAST GATE COULD NOT SEE THIS AT ALL, and that is the reusable
+  finding: the in-memory repository fake reproduced the dedup-key unique
+  index but not the profile-name one, so the fast gate accepted a sequence
+  the real database always refused. The fake now reproduces it, and one
+  test helper that gave every file in a world the same format name (a
+  sequence that would have crashed against Postgres) names per source.
+- SIBLING PATHS CHECKED, and the hole is not elsewhere in the import
+  confirmation flow: ingest inserts with duplicate keys skipped, the
+  interpretation rebuild deletes its links before inserting, and the card
+  account declared at confirm time carries no account number, so its
+  unique index is never engaged (verified against the local database, two
+  such accounts in one household accepted). ONE ADJACENT SHAPE IS NOT
+  FIXED and is recorded rather than widened into: naming a merchant is a
+  find-then-create against the merchants unique index on name, which two
+  simultaneous namings could still race. It is not the reported defect and
+  was left for the owner to schedule.
+- Gates, all run here against a local Supabase stack pinned to loopback:
+  typecheck, lint, fast suite (758, was 753), privacy, decisions, tokens,
+  the FULL slow gate (124 passed, 1 skipped, 34.4 minutes, same shape as
+  main's baseline) and the production build. Every one exits 0.
+- Pushed. Not merged, no pull request opened.
+
+## The owner is testing: everything prepped (2026-08-29)
+
+- main and production are both d4e491b, health/db 200, all routes 200.
+  Verified by the orchestrator: 758 fast tests, production build exit 0,
+  and the full slow gate exit 0 at 124 passed on the merged tree.
+- THE OWNER'S HOUSEHOLD WAS RESET with their authorization, given twice.
+  Deleted: transactions, merchant rules, merchants, imports, source
+  profiles, accounts, tags, transfer links. KEPT: the household row and
+  the user row, so they sign in with existing credentials and land in the
+  M3-P14 setup flow, which renders when the household has no accounts.
+  Irreversible and stated as such before doing it.
+- M3-P16 IS CLOSED AS UNNECESSARY rather than blocked: the single merchant
+  rule it existed to re-derive was removed by the reset. The ask for the
+  owner's deployed connection strings is withdrawn. A plan amendment
+  recording the closure is owed, queued with the 13.2 amendment.
+- ONE CRASH FIXED AHEAD OF THE SESSION, because naming an import format
+  twice is an ordinary action and produced an Application error page:
+  the duplicate name is now a typed refusal with copy in three catalogues.
+- THE FINDING UNDER THAT FIX MATTERS MORE THAN THE FIX. The in-memory fake
+  the fast gate binds did not reproduce the (householdId, name) unique
+  index, so the fast gate was green on sequences the real database always
+  refuses. Making the fake faithful reddened FIVE pre-existing tests whose
+  helper named every file in one world identically. That is the same shape
+  as the migration defect found the same day, where a class weaker than
+  its subject reported safe by construction. STANDING RULE: a fake that
+  omits a constraint its subject enforces is not a simplification, it is a
+  false witness, and the fast gate inherits its blindness.
+- Left recorded rather than widened into: assignMerchant is a find-then-
+  create against Merchant's own unique index, outside the import flow,
+  needing two simultaneous namings to fire.
