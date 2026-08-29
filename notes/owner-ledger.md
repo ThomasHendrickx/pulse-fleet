@@ -835,3 +835,95 @@ again as if new, which happened repeatedly up to 2026-08-27.
   remedy would still have swallowed words, because a space separates both an
   account's groups and two sentences' words. Recorded because an implementer
   measuring an instruction and refusing it is the behaviour this fleet wants.
+
+## M3-P18 harvest branch pushed, not merged (2026-08-29), claude/m3-p18-harvest ba3965d
+
+- TWO DEFECTS THAT WERE LIVE ON MAIN are fixed on this branch. Both were
+  found by an agent who kept working on the P18 phase branch after it
+  merged, on commits that never reached main. Both were reproduced here
+  before being ported, and neither was taken on trust.
+- THE RESERVES BLOCK COULD READ DOUBLE. The migration this phase shipped
+  deliberately keeps a pair of account rows that are one real account.
+  For a household holding such a pair, the reserves query matched one
+  movement to both rows and the screen added them up, so the reserves
+  block showed twice what moved, while the reconciliation banner, which
+  is computed differently, still said the books close. Nothing on screen
+  contradicted the wrong number. Measured here, then fixed and measured
+  again.
+- THE ACCOUNT-NUMBER CLEANUP COULD DESTROY A STORED NUMBER. The SQL that
+  strips spaces out of stored account numbers still asked Postgres what
+  counts as a space, and Postgres answers that from the server's own
+  settings rather than from the committed code. On this container's
+  server it stripped five characters MORE than the application does,
+  which would rewrite a stored number into a form the application can
+  never match again, with the original gone and the migration reporting
+  success. WORSE THAN THE BRANCH RECORDED IT: that branch measured the
+  problem only under a specially named setting; here the server's own
+  DEFAULT does it, so it is what an ordinary connection gets. The code
+  now spells out every character itself and asks the server nothing.
+- WHAT WAS DELIBERATELY LEFT BEHIND, and the owner is being told rather
+  than having to notice. The same source commit also relaxed the rule
+  that an account's ring is frozen once it carries its own imported
+  rows, so a savings account could be moved back into the pot. That rule
+  is the OWNER'S decision DR-0031. The branch's argument that a later
+  decision undid its premise is the reviewing lane's own inference, and
+  it is already parked awaiting a new owner record that does not exist.
+  Non-negotiable 9 says a decided decision is reversed only by the
+  owner. So the guard is byte identical to main and the test asserting
+  the relaxed behaviour was left behind. NO QUESTION IS BEING PUT BACK
+  TO THE OWNER HERE; this is a record of what was not done and why.
+- WHAT THE EXCLUSION COSTS, stated rather than hidden: if the parked
+  argument turns out to be right, a household that answered a ring
+  wrongly at setup and then uploaded that account's statement still has
+  no way to correct it. That belongs to the owner's next record.
+- Gates, all run here against a local stack: typecheck, lint, fast suite
+  (753), privacy, decisions, tokens, build and the FULL slow gate all
+  exit 0, the slow gate at 124 passed and 1 skipped. Main's baseline was
+  122; the two arms this branch adds account for the difference.
+- Not merged, no pull request opened.
+
+## The read-back is DONE, and the branch prune found two live defects (2026-08-27/29)
+
+- THE OWNER SENT BOTH REAL DOCUMENTS, so the read-back that four phases
+  recorded as owed is now performed. Method: every distinctive token from
+  both statements (account shapes, card shapes, long digit runs, amounts,
+  capitalised segments) compared against the whole tracked tree. RESULT:
+  zero account numbers, zero card numbers, zero long digit runs, and zero
+  real merchant or counterparty descriptors reached the repository. The
+  eighteen phrase-level hits are all bank format furniture the parsers must
+  recognise. Two fixture labels that looked like the owner's data are
+  INVENTED: neither phrase occurs in either document. ONE amount in a
+  decimal-comma parser case also occurs in a real document; it is a round
+  number and plausibly invented, that cannot be proven, so it was replaced.
+  Neither value is recorded anywhere in the tree. The read-back is no
+  longer owed by M3-P18, M3-P13, M3-P10 or M3-P11.
+- THE PRUNE IS DONE, with the owner's approval: 82 branches advanced onto
+  main, none left behind. ONE branch conflicted and was left alone by the
+  script, which is how two live defects were found.
+- THAT BRANCH CARRIED FIVE COMMITS MADE AFTER ITS PHASE WAS MERGED. An
+  agent kept working on claude/m3-p18-savings-held-and-migration after the
+  orchestrator merged a620ae2 and moved on. PROCESS LESSON: a merge does
+  not stop a lane. When a phase is merged, its lanes must be told, or their
+  later work is invisible until something forces a look.
+- TWO REAL DEFECTS, both on main until now, both harvested and merged at
+  4bd6d7a after the orchestrator's own runs (753 fast tests, slow gate exit
+  0 at 124 passed):
+  ONE, the reserves join matched a transaction to EVERY account row sharing
+  a canonical number, and the migration deliberately preserves such pairs,
+  so an affected household's reserves block read DOUBLE what moved while
+  the reconciliation banner still read as closing. Now one row per
+  transaction through a lateral, with the block's net asserted equal to the
+  reconciliation's own net.
+  TWO, the shared SQL whitespace class still contained a POSIX [:space:],
+  whose membership Postgres takes from the cluster's locale rather than
+  from the committed SQL. Measured on Postgres 17.6: it over-strips five
+  code points under ICU. THE OWNER'S DEPLOYED DATABASE IS ICU-PROVISIONED
+  (datlocprovider i, verified), so the backfill applied there earlier that
+  day carried the defect; it rewrote nothing only because no row needed
+  rewriting. The class now enumerates code points and names no POSIX class.
+- A THIRD CHANGE ON THAT BRANCH WAS DELIBERATELY LEFT BEHIND: it relaxed
+  the ring guard so a savings account carrying its own rows could move back
+  into the pot. That is DR-0031's freeze, no new owner record exists, and
+  the argument that DR-0030 falsified its premise is the lane's inference,
+  already parked. change-account-ring.ts is byte-identical to main and the
+  test asserting the owner's behaviour passes unchanged.
