@@ -4,6 +4,6 @@
   "private": true,
   "description": "Tiphys fleet home. The kernel dependency below is an exact pin; changing it is how this fleet upgrades (blueprint section 3).",
   "dependencies": {
-    "@tiphys/kernel": "0.1.0"
+    "@tiphys/kernel": "0.2.1"
   }
 }
