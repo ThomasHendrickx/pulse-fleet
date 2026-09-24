@@ -1009,3 +1009,44 @@ again as if new, which happened repeatedly up to 2026-08-27.
 - Left recorded rather than widened into: assignMerchant is a find-then-
   create against Merchant's own unique index, outside the import flow,
   needing two simultaneous namings to fire.
+
+## Session of 2026-09-23 and 2026-09-24 (orchestrator, cloud session)
+
+This session ran without the fleet home until 2026-09-24, so it could not
+read this ledger before its first reports; everything below is appended
+after the fact, and one correction is owed for it.
+
+- CORRECTION ISSUED: the status report of 2026-09-23 listed M3-P16 as an
+  open phase. It is not: M3-P16 was CLOSED AS UNNECESSARY on 2026-08-29
+  (entry above, the household reset removed the one merchant rule it
+  existed to re-derive). The plan amendment recording that closure is
+  still owed.
+- DECISION (DR-0032, 2026-09-23): kernel upgrades apply to current and
+  future records only; history stays as written ("History remains what it
+  is since we can't change it"). No review-families declaration, because
+  the unchanged history refutes it; DR-0003 keeps being discharged by the
+  orchestrator. Never re-ask.
+- Told: kernel pin 0.1.0 to 0.2.0 (pulse PR #21) and to 0.2.1 (pulse PR
+  #23). 0.2.1 validates unstamped verdicts as history under the 0.1.0
+  rules, which is DR-0032 in the kernel's own terms. gate:decisions now
+  counts JSON verdict rounds as well as YAML (a third JSON round would
+  have passed unseen).
+- Told: M3-P4 (import flow usable at phone width) merged, pulse PR #22,
+  main b7036d7. Two review rounds per lane; round two's hazard lane still
+  read FIX-ROUND-NEEDED on a false witness record, carried as work under
+  CLAUDE.md rule 10 and merged on the owner's "merge at green". Stated
+  plainly: the kernel's pair-approves check was NOT satisfied for that
+  phase.
+- Told: why the full slow gate takes about 28 minutes (one worker by
+  design, 127+ tests, UI-driven setup in every test, four heavy specs).
+  Speed-ups offered as their own unit of work, not started.
+- Told: CI added (pulse PR #24, main dff0824): fast gate and the full
+  Playwright slow gate on Node 22 against a local Supabase stack in the
+  runner. Its first run found that npm ci under npm 10 refused the
+  lockfile (a gap older than this session, present at d4e491b); fixed in
+  the same PR.
+- Standing gaps, known and not yet worked: the kernel requires Node 26
+  while pulse pins Node 22 and lists the kernel as a runtime dependency;
+  four historical work histories (m3-p9, m3-p10, m3-p12, m3-p18) fail the
+  work-history schema and stay as history under DR-0032; the fleet's
+  decisions/ copy lacks DR-0031 and DR-0032.
