@@ -1050,3 +1050,25 @@ after the fact, and one correction is owed for it.
   four historical work histories (m3-p9, m3-p10, m3-p12, m3-p18) fail the
   work-history schema and stay as history under DR-0032; the fleet's
   decisions/ copy lacks DR-0031 and DR-0032.
+- Told (2026-09-24): M3-P5, share a PDF from the phone straight into the
+  import flow, merged at EXACTLY the commit both reviewers approved, as the
+  owner asked: pulse PR #25 merged with its head pinned to 98fbadc, both
+  round two verdicts APPROVE at 98fbadc, CI fast and slow gates green on
+  98fbadc, and main's tree (8edba11) identical to 98fbadc's. The first
+  phase for which the kernel's verdict-pair-approves check is satisfied;
+  its produced-by line still names the shared family, which DR-0003
+  discharges. Round one of both lanes found the same defect: the route
+  refused the share shipped Android Chrome actually sends (Origin: null),
+  while every test passed because none sent that header. Fixed, with a red
+  witness. Records (round two verdicts, closing record) in pulse PR #26.
+- OWED, from the owner: install Pulse on the Android phone from the
+  deployed site and share one real statement from the banking app into it
+  (open claim C-5-on-device in the pulse repo's M3-P5 work history). No
+  device is reachable from a container.
+- Carried as work, not started: refuse Origin null without Sec-Fetch-Site
+  in the share route and correct its comment; a unit test pinning the
+  anchored manifest matcher; a decision on a size cap for shared files
+  (the upload form is capped at 1 MB by Next's default, the share route is
+  not); converge test/e2e/mobile-import.spec.ts onto measurePhoneScreen.
+- Fleet home: kernel pin moved 0.1.0 to 0.2.1 (pulse-fleet PR #1); the
+  fleet charter copy now matches the project charter byte for byte.
